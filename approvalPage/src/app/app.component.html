@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App main</title>
+
+  <style>
+    body {
+      margin-top: 1px;
+      margin-bottom: 1px;
+      margin-left: 2px;
+      margin-right: 2px;
+    }
+
+    .row {
+      margin-top: 2px;
+      margin-bottom: 2px;
+      margin-left: 2px;
+      margin-right: 2px;
+    }
+
+    .table {
+      border: 2px solid orange;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="row g-3" style="min-height: 650px;">
+    <!-- Left side of page -->
+    <div class="card col-md-3 border border-warning">
+      <div class="card-body">
+
+        <!-- At risk -->
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn btn-danger">At risk</button>
+            </h2>
+            <div ngbAccordionCollapse>
+              <div ngbAccordionBody>
+                <ng-template>
+                  <ul class="list-group">
+                    @for (item of students; track $index) {
+
+                    @if (item.atRisk && !wasApproved(item)) {
+                    <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}}
+                    </button>
+                    }
+                    }
+
+                  </ul>
+
+                </ng-template>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Not at risk -->
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn btn-secondary">Not at risk</button>
+            </h2>
+            <div ngbAccordionCollapse class="justify-content-center">
+              <div ngbAccordionBody>
+
+                <ng-template>
+
+                  <ul class="list-group">
+                    @for (item of students; track $index) {
+
+                    @if (!item.atRisk && !wasApproved(item)) {
+                    <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}}
+
+                    </button>
+                    }
+                    }
+
+                  </ul>
+
+                </ng-template>
+
+                <!-- Condition to display approve all -->
+                 @if (preApproveAll()) {
+                <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
+                  all</button>
+                }
+
+              </div>
+
+              <!-- <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
+                all</button> -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Right side of page -->
+    <div class="card col-sm-9 border border-warning" style="min-height: 650px;">
+      <div class="card-body">
+
+        <!-- Search bar -->
+        <div class="input-group mb-3">
+          <span class="input-group-text btn btn-secondary" id="basic-addon1">Search Student</span>
+          <input type="text" class="form-control" placeholder="Enter a student name or Roll No" aria-label="Username"
+            aria-describedby="basic-addon1" [(ngModel)]="student" (input)="searchResult()">
+
+        </div>
+
+        <!-- If input is given and student is selected : Ok -> Not Study + fail = T -->
+        <!-- Else if input is not given and student is selected: Not ok -> study + fail = f -->
+        <!-- Else if input is given and student is not selected: Ok -> Not study + pass = T -->
+        <!-- Else if input is not given and student is not selected: Ok -> Study + fail = F-->
+
+        <!-- Not input -> Not selected -->
+        @if (student) {
+        <!-- Table of available students -->
+        <div class="container-fluid list-group">
+
+          @for (item of students; track $index) {
+
+          <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}} </button>
+
+          }
+
+
+          <!-- <button type="button" class="list-group-item list-group-item-action" (click)="downloadRequestObject()">Download Network Data</button> -->
+        </div>
+        }
+        <!-- @if (!student || selectedStudent) {} -->
+        <!-- A: selectedStudent && !student -->
+        <!-- B: student && selectedStudent -->
+
+        @if((displayFlag)){
+        <app-student [student]="selectedStudent"></app-student>
+        @if(!wasApproved(selectedStudent)){
+        <br>
+        <div class="container-fluid">
+          <div class="input-group mb-3">
+            <span class="input-group-text btn btn-secondary" id="basic-addon1">Remarks</span>
+            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1"
+              [(ngModel)]="inputRemark" (input)="giveRemark()">
+
+          </div>
+
+          <button class="btn btn-success justify-content-center me-1" (click)="approveStudent()">Approve</button>
+          <button class="btn btn-danger justify-content-center ms-1" (click)="rejectStudent()">Reject</button>
+        </div>
+        }
+
+        @else {
+        <br>
+        <div class="container">
+          This student has already been approved!
+        </div>
+        }
+        }
+        <!-- @else if (student) {
+              <app-student [student]="selectedStudent"></app-student>
+            } -->
+        <br>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
