@@ -1,128 +1,180 @@
 <!-- <p>student works!</p> -->
 <style>
-  .table {
-    border: 2px solid orange;
-  }
-
-  .para {
-    border: 2px solid orange;
-    margin: 5px;
+  .table{
+    height: auto;
   }
 </style>
 
 
 @if (student) {
-<div class="container-fluid details">
-  <h2> Student Details</h2>
-  <div class="container-fluid para">
-    <p class="lead"> Name: {{student.name}} </p>
-    <p class="lead"> Roll No : {{student.rollNo}} </p>
-    <p class="lead"> Programme: {{student.program}} </p>
-  </div>
+<div class="container-fluid">
 
-  <br>
-
-  <h2>Risk Description:</h2>
-  <div class="container-fluid para">
-    <p class="lead"> {{student.riskDecs}} </p>
-  </div>
-</div>
-
-<div ngbAccordion>
-  <div ngbAccordionItem>
-    <h2 ngbAccordionHeader>
-      <button ngbAccordionButton class="btn btn-secondary">Core Courses</button>
-    </h2>
-    <div ngbAccordionCollapse>
-      <div ngbAccordionBody>
-        <ng-template>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Code</th>
-                <th scope="col">Name</th>
-                <th scope="col">Credits</th>
-                <th scope="col">Slot</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              @for (item of student.coreCourses; track $index) {
-              <tr>
-                <th scope="row"> {{$index + 1}} </th>
-                <td> {{item.code}} </td>
-                <td> {{item.name}} </td>
-                <td> {{item.credits}} </td>
-                <td> {{item.slot}} </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-
-        </ng-template>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<div ngbAccordion>
-  <div ngbAccordionItem>
-    <h2 ngbAccordionHeader>
-      <button ngbAccordionButton class="btn btn-secondary">Elective Courses</button>
-    </h2>
-    <div ngbAccordionCollapse>
-      <div ngbAccordionBody>
-        <ng-template>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Code</th>
-                <th scope="col">Min</th>
-                <th scope="col">Max</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              @for (item of student.electiveCredits; track $index) {
-              <tr>
-                <th scope="row"> {{$index + 1}} </th>
-                <td> {{item.code}} </td>
-                <td> {{item.min}} </td>
-                <td> {{item.max}} </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-
-        </ng-template>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- @if(!wasApproved()){
-        <br>
-        <div class="container-fluid">
-            <div class="input-group mb-3">
-                <span class="input-group-text btn btn-secondary" id="basic-addon1">Remarks</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1" [(ngModel)]="inputRemark" (input)="giveRemark()">
-  
-            </div>
-            
-            <button class="btn btn-success justify-content-center me-1" (click)="approveStudent()">Approve</button>
-            <button class="btn btn-danger justify-content-center ms-1" (click)="rejectStudent()">Reject</button>
+  <div class="row g-3 justify-content-center">
+    <div class="card col-5 me-2 border border-dark">
+      <div class="card-body">
+        <h2> Student Details</h2>
+        <div class="container-fluid border border-dark">
+          <p class="lead"> Name: {{student.name}} </p>
+          <p class="lead"> Roll No : {{student.rollNo}} </p>
+          <p class="lead"> Programme: {{student.program}} </p>
         </div>
-    }
-
-    @else {
-      <br>
-      <div class="container">
-        This student has already been approved!
       </div>
-    } -->
+    </div>
+
+
+    <div class="card col-5 ms-2 border border-dark">
+
+      <div class="card-body">
+        <h2>Risk Description</h2>
+        <div class="container-fluid border border-dark">
+          <p class="lead"> {{student.riskDecs}} </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<br>
+<div class="row g-3 justify-content-center">
+
+  <div class="card col-5 me-2 border border-dark">
+
+    <div class="card-body"> 
+      <!-- <div ngbAccordion>
+        <div ngbAccordionItem>
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton class="btn btn-secondary">Core Courses</button>
+          </h2>
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template>
+
+                <table class="table border border-dark">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Credits</th>
+                      <th scope="col">Slot</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    @for (item of student.coreCourses; track $index) {
+                    <tr>
+                      <th scope="row"> {{$index + 1}} </th>
+                      <td> {{item.code}} </td>
+                      <td> {{item.name}} </td>
+                      <td> {{item.credits}} </td>
+                      <td> {{item.slot}} </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+
+              </ng-template>
+
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <h2>Core Courses</h2>
+      <table class="table table-bordered border border-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+            <th scope="col">Credits</th>
+            <th scope="col">Slot</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (item of student.coreCourses; track $index) {
+          <tr>
+            <th scope="row"> {{$index + 1}} </th>
+            <td> {{item.code}} </td>
+            <td> {{item.name}} </td>
+            <td> {{item.credits}} </td>
+            <td> {{item.slot}} </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="card col-5 ms-2 border border-dark">
+
+    <div class="card-body">
+      <!-- <div ngbAccordion>
+        <div ngbAccordionItem>
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton class="btn btn-secondary">Elective Courses</button>
+          </h2>
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template>
+                <table class="table border border-dark">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Min</th>
+                      <th scope="col">Max</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    @for (item of student.electiveCredits; track $index) {
+                    <tr>
+                      <th scope="row"> {{$index + 1}} </th>
+                      <td> {{item.code}} </td>
+                      <td> {{item.min}} </td>
+                      <td> {{item.max}} </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+
+              </ng-template>
+
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <h2>Elective Courses</h2>
+      <table class="table table-bordered border border-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Code</th>
+            <th scope="col">Min</th>
+            <th scope="col">Max</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (item of student.electiveCredits; track $index) {
+          <tr>
+            <th scope="row"> {{$index + 1}} </th>
+            <td> {{item.code}} </td>
+            <td> {{item.min}} </td>
+            <td> {{item.max}} </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>
 }

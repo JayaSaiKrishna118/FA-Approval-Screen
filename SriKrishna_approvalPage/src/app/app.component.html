@@ -21,18 +21,18 @@
       margin-right: 2px;
     }
 
-    .table {
+    /* .table {
       border: 2px solid orange;
-    }
+    } */
   </style>
 
 </head>
 
 <body>
 
-  <div class="row g-3" style="min-height: 650px;">
+  <div class="row g-3 justify-content-center" style="min-height: 650px;">
     <!-- Left side of page -->
-    <div class="card col-md-3 border border-warning">
+    <div class="card col-3 border border-dark justify-content-center me-2">
       <div class="card-body">
 
         <!-- At risk -->
@@ -53,6 +53,7 @@
                     }
                     }
 
+
                   </ul>
 
                 </ng-template>
@@ -66,9 +67,9 @@
         <div ngbAccordion>
           <div ngbAccordionItem>
             <h2 ngbAccordionHeader>
-              <button ngbAccordionButton class="btn btn-secondary">Not at risk</button>
+              <button ngbAccordionButton class="btn btn-success">Not at risk</button>
             </h2>
-            <div ngbAccordionCollapse class="justify-content-center">
+            <div ngbAccordionCollapse>
               <div ngbAccordionBody>
 
                 <ng-template>
@@ -87,16 +88,17 @@
 
                 </ng-template>
 
-                <!-- Condition to display approve all -->
-                 @if (preApproveAll()) {
-                <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
-                  all</button>
-                }
+
 
               </div>
 
-              <!-- <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
-                all</button> -->
+              <!-- Condition to display approve all -->
+              @if (preApproveAll()) {
+              <div class="container-fluid justify-content-center">
+                <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
+                  all</button>
+              </div>
+              }
             </div>
           </div>
         </div>
@@ -106,7 +108,7 @@
 
 
     <!-- Right side of page -->
-    <div class="card col-sm-9 border border-warning" style="min-height: 650px;">
+    <div class="card col-8 border border-dark ms-2" style="min-height: 650px;">
       <div class="card-body">
 
         <!-- Search bar -->
@@ -114,6 +116,8 @@
           <span class="input-group-text btn btn-secondary" id="basic-addon1">Search Student</span>
           <input type="text" class="form-control" placeholder="Enter a student name or Roll No" aria-label="Username"
             aria-describedby="basic-addon1" [(ngModel)]="student" (input)="searchResult()">
+            <br>
+            <!-- <p> {{student}} </p> -->
 
         </div>
 
@@ -133,6 +137,13 @@
 
           }
 
+          <!-- <label for="typeahead-focus">Search for a state:</label>
+          <input id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
+            (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)"
+            #instance="ngbTypeahead" />
+
+          <hr />
+          <pre>Model: {{ model | json }}</pre> -->
 
           <!-- <button type="button" class="list-group-item list-group-item-action" (click)="downloadRequestObject()">Download Network Data</button> -->
         </div>
@@ -142,6 +153,7 @@
         <!-- B: student && selectedStudent -->
 
         @if((displayFlag)){
+        <br>
         <app-student [student]="selectedStudent"></app-student>
         @if(!wasApproved(selectedStudent)){
         <br>
@@ -152,6 +164,10 @@
               [(ngModel)]="inputRemark" (input)="giveRemark()">
 
           </div>
+
+          @if(inputRemark == ''){
+          <div class="container"> {{displayText}} </div> <br>
+          }
 
           <button class="btn btn-success justify-content-center me-1" (click)="approveStudent()">Approve</button>
           <button class="btn btn-danger justify-content-center ms-1" (click)="rejectStudent()">Reject</button>

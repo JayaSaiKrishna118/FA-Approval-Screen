@@ -1,18 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { NgbAccordionBody, NgbAccordionItem, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Studentinfo } from '../../students.json';
 // import '../../Skeleton' ;
 import * as models from '../../Skeleton';
 import { NgFor, NgIf } from '@angular/common';
 import { StudentComponent } from './student/student.component';
+import { Observable, Subject, merge, OperatorFunction } from 'rxjs';
+import { ViewChild } from '@angular/core';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgbModule, FormsModule, NgFor, NgIf, StudentComponent],
+  imports: [RouterOutlet, NgbModule, FormsModule, NgFor, NgIf, StudentComponent, NgbTypeaheadModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -33,6 +37,9 @@ export class AppComponent {
   selectedStudent !: models.StudentInfo;
   approveAllClicked: boolean = false;
 
+  displayText: string = '';
+
+  model: string = '';
   preApproveAll(): boolean{
     for(let i = 0; i < this.students.length; i++){
       if(this.students[i].approvalStatus != models.ApprovalStatus.APPROVED && this.students[i].atRisk == false)
@@ -66,33 +73,22 @@ export class AppComponent {
   //   return true;
   // }
 
-  searchResult(): void{
+  searchResult(): string{
     // console.log(this.student);
     this.displayFlag = (this.student != '');
     this.displayedData = this.students.filter(c => this.filterStudent(c));
 
+    return this.displayedData.toString();
     // console.log(this.displayedData);
   }
 
 
   onClick(student: models.StudentInfo): void{
     this.displayFlag = true;
+    this.displayText = '';
     // if(this.student)  
       this.selectedStudent = student;
-    // else{
-    //   this.selectedStudent = {
-    //     rollNo: '',
-    //     name: '',
-    //     program: '',
-    //     atRisk: false,
-    //     riskDecs: '',
-    //     coreCourses: [],
-    //     electiveCredits:[], 
-    //     approvalStatus: models.ApprovalStatus.PENDING,
-    //     approvalRemarks: '',
-    //   };
-    // }
-    // // console.log(this.selectedStudent.name);
+
   }
 
   approveAll(): void{
@@ -121,8 +117,16 @@ export class AppComponent {
 
   rejectStudent(): void{
     this.approveAllClicked = false;
-    this.selectedStudent.approvalStatus = models.ApprovalStatus.REJECTED;
-    this.downloadRequestObject();
+    this.giveRemark();
+
+    if(this.selectedStudent.approvalRemarks == ''){
+      this.displayText = "Please remember to give the student a remark for rejection!";
+      return;
+    }
+    
+      this.selectedStudent.approvalStatus = models.ApprovalStatus.REJECTED;
+      this.downloadRequestObject();
+    
   }
 
 
@@ -182,5 +186,21 @@ export class AppComponent {
     window.URL.revokeObjectURL(url);
   }
 
+  @ViewChild('instance', { static: true })
+  instance!: NgbTypeahead;
 
+	focus$ = new Subject<string>();
+	click$ = new Subject<string>();
+
+	search: OperatorFunction<string, readonly models.StudentInfo[]> = (text$: Observable<string>) => {
+		const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+		const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+		const inputFocus$ = this.focus$;
+
+		return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+			map((term) =>
+				(term === '' ? this.students : this.students.filter((v) => this.filterStudent(v))).slice(0, 10),
+			),
+		);
+	};
 }
