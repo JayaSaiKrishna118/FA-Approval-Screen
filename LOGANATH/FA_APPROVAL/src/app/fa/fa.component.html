@@ -1,0 +1,314 @@
+<div class="mt-2 container-fluid" style="min-height: 90vh">
+  <div class="m-2 row">
+    <!-- Left Panel -->
+    <div class="p-2 col-md-4">
+      <div class="m-2 card">
+        <!-- Pending -->
+        <div class="fs-3 text-center">PENDING</div>
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn bg-danger fs-3 text-white">
+                <i class="fa-regular fa-face-frown"></i>At Risk
+              </button>
+            </h2>
+            <div ngbAccordionCollapse>
+              @for (stud of students; track $index) { @if (stud.atRisk &&
+              pending(stud)=="PENDING") {
+              <button
+                class="m-2 btn btn-outline-dark"
+                (click)="searchclick($event, stud.rollNo)"
+              >
+                {{ stud.rollNo }}
+              </button>
+              } }
+            </div>
+          </div>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn bg-success fs-3 text-white">
+                <i class="fa-regular fa-face-smile"></i>Not at Risk
+              </button>
+            </h2>
+            <div ngbAccordionCollapse>
+              @for (stud of students; track $index) { @if (!stud.atRisk &&
+              pending(stud)=="PENDING") {
+              <button
+                class="m-2 btn btn-outline-dark"
+                (click)="searchclick($event, stud.rollNo)"
+              >
+                {{ stud.rollNo }}
+              </button>
+              } } @if(this.notatrisk.length>0){
+              <button
+                ngbAccordionBody
+                (click)="approve_all()"
+                class="btn btn-outline-dark fs-5 p-2 w-100"
+              >
+                <i class="fa-solid fa-check-double"></i>Approve All
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Completed -->
+      <div class="m-2 card">
+        <div class="fs-3 text-center">COMPLETED</div>
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn bg-success fs-3 text-white">
+                <i class="fa-regular fa-thumbs-up"></i>Approved
+              </button>
+            </h2>
+            <div ngbAccordionCollapse>
+              @for (stud of students; track $index) { @if (
+              pending(stud)=="APPROVED") {
+              <button
+                class="m-2 btn btn-outline-dark"
+                (click)="searchclick($event, stud.rollNo)"
+              >
+                {{ stud.rollNo }}
+              </button>
+              } }
+            </div>
+          </div>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn bg-danger fs-3 text-white">
+                <i class="fa-regular fa-thumbs-down"></i>Rejected
+              </button>
+            </h2>
+            <div ngbAccordionCollapse>
+              @for (stud of students; track $index) { @if (
+              pending(stud)=="REJECTED") {
+              <button
+                class="m-2 btn btn-outline-dark"
+                (click)="searchclick($event, stud.rollNo)"
+              >
+                {{ stud.rollNo }}
+              </button>
+              } }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Right Panel -->
+    <div class="col-md-8 p-2 d-md-flex flex-column">
+      <!-- Search bar -->
+      <div class="d-md-flex">
+        <input
+          id="typeahead-basic"
+          type="text"
+          class="form-control"
+          [formControl]="searchstr"
+          [ngbTypeahead]="search"
+          placeholder="Student Rollno"
+          (keyup.enter)="searchclick($event, searchstr.value)"
+          />
+        <button
+          class="btn btn-outline-dark"
+          (click)="searchclick($event, searchstr.value)"
+        >
+          Search
+        </button>
+      </div>
+      @if(isstudsel){
+      <!-- Student Details -->
+      <div class="m-3 d-md-flex justify-content-around">
+        <div class="m-2 fs-5">
+          <i class="fa-solid fa-user"></i> <b>Name:</b> @if (isstudsel) {
+          {{ selstudroll.name }} }
+        </div>
+        <div class="m-2 fs-5">
+          <i class="fa-solid fa-hashtag"></i> <b>Rollno:</b> @if (isstudsel) {
+          {{ selstudroll.rollNo }} }
+        </div>
+        <div class="m-2 fs-5">
+          <i class="fa-solid fa-graduation-cap"></i> <b>Program:</b> @if
+          (isstudsel) { {{ selstudroll.program }} }
+        </div>
+        <div class="m-2 fs-5">
+          <i class="fa-solid fa-pen-nib"></i> <b>CGPA:</b> @if (isstudsel) {
+          {{ selstudroll.CGPA }} }
+        </div>
+        <!-- <div> {{selstudroll.name}} </div>
+             <div> {{selstudroll.rollNo}} </div>
+             <div> {{selstudroll.program}} </div> -->
+      </div>
+      <!-- Approve/Reject Button -->
+      <div class="p-2 d-md-flex justify-content-around">
+        @if(pending(selstudroll)=="PENDING"){
+        <div class="p-2 d-md-flex justify-content-around w-50">
+          <button
+            type="button"
+            (click)="approve_reject(true)"
+            class="btn btn-outline-dark btn-lg btn-block"
+          >
+            <i class="fa-solid fa-thumbs-up text-success"></i>
+            Approve
+          </button>
+          <button
+            type="button"
+            (click)="approve_reject(false)"
+            class="btn btn-outline-dark btn-lg btn-block"
+          >
+            <i class="fa-solid fa-thumbs-down text-danger"></i>
+            Reject
+          </button>
+        </div>
+        } @else if (pending(selstudroll)=="APPROVED") {
+        <div class="text-center">
+          <p class="fw-bolder text-center text-dark fs-3">This student has been approved</p>
+        </div>
+        } @else {
+        <div class="text-center">
+          <p class="fw-bolder text-center text-dark fs-3">This student has been rejected</p>
+        </div>
+        }
+        <div class="w-50">
+          @if(this.backlogs.get(selstudroll.rollNo)){
+          <div class="text-center">This student has some backlogs <i class="fa-solid fa-circle-xmark text-danger"></i></div>
+          } @else{
+          <div class="text-center">This student has no backlogs <i class="fa-solid fa-circle-check text-success"></i></div>
+          }
+          <div class="text-center">
+            <div ngbDropdown class="d-inline-block">
+              <button
+                type="button"
+                class="btn btn-outline-dark"
+                id="dropdownBasic1"
+                ngbDropdownToggle
+              >
+                History
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <table class="table table-striped table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th class="text-center" scope="col">#</th>
+                      <th class="text-center" scope="col">Code</th>
+                      <th class="text-center text-wrap" scope="col">Name</th>
+                      <th class="text-center" scope="col">Credits</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of selstudroll.pastCourses; track $index) {
+                    <tr>
+                      <th scope="row">{{ $index + 1 }}</th>
+                      <td class="text-center">{{ item.code }}</td>
+                      <td class="text-center">{{ item.name }}</td>
+                      <td class="text-center">{{ item.credits_acquired }}/{{item.total_credits}}</td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Course Description -->
+      <div class="row justify-content-around d-md-flex">
+        <!-- Core Courses -->
+        <div class="border table-responsive border-dark col-md-7">
+          <div class="text-center text-dark fs-4">Core Courses</div>
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th class="text-center">#</th>
+                <th class="text-center">Code</th>
+                <th class="text-center text-wrap">Name</th>
+                <th class="text-center">Credits</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of selstudroll.coreCourses; track $index) {
+              <tr>
+                <th>{{ $index + 1 }}</th>
+                <td class="text-center">{{ item.code }}</td>
+                <td class="text-center">{{ item.name }}</td>
+                <td class="text-center">{{ item.credits }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <!-- Elective Credits -->
+        <div class="border table-responsive border-dark col-md-5">
+          <div class="text-center text-dark fs-4">Elective Credits</div>
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Code</th>
+                <th class="text-center" scope="col">Min</th>
+                <th class="text-center" scope="col">Max</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of selstudroll.electiveCredits; track $index) {
+              <tr>
+                <th scope="row">{{ $index + 1 }}</th>
+                <td class="text-center">{{ item.code }}</td>
+                <td class="text-center">{{ item.min }}</td>
+                <td class="text-center">{{ item.max }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <!-- Past History -->
+        <!-- <div class="border table-responsive border-dark col-md-4">
+          <div class="text-center text-dark fs-4">History</div>
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th class="text-center" scope="col">#</th>
+                <th class="text-center" scope="col">Code</th>
+                <th class="text-center text-wrap" scope="col">Name</th>
+                <th class="text-center" scope="col">Credits</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of selstudroll.pastCourses; track $index) {
+              <tr>
+                <th scope="row">{{ $index + 1 }}</th>
+                <td class="text-center">{{ item.code }}</td>
+                <td class="text-center">{{ item.name }}</td>
+                <td class="text-center">{{ item.credits_acquired }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div> -->
+      </div>
+      <!-- Risk Description -->
+      <div class="">
+        <label class="text-dark fs-4"
+          ><i class="fa-solid fa-comment m-2"></i>Risk Desc:</label
+        >
+        <p class="form-control text-dark border border-info border-2">
+          {{ selstudroll.riskDecs }}
+        </p>
+      </div>
+      <!-- Remarks -->
+      <div class="">
+        @if(selstudroll.atRisk){
+        <label class="text-dark fs-4">Remarks:</label>
+        <input
+          name="Student"
+          type="text"
+          placeholder="  Remarks"
+          [formControl]="newremarks"
+          (input)="remarks()"
+          class="m-2 p-2 w-75 border border-info border-2 text-wrap"
+        /><br /><br />
+        }
+      </div>
+      }
+    </div>
+  </div>
+</div>
