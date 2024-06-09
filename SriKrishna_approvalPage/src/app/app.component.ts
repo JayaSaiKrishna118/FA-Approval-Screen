@@ -31,6 +31,7 @@ export class AppComponent {
   student: string = '';
   displayedData: models.StudentInfo[] = [];
   selectedStudent !: models.StudentInfo;
+  approveAllClicked: boolean = false;
 
   preApproveAll(): boolean{
     for(let i = 0; i < this.students.length; i++){
@@ -95,6 +96,7 @@ export class AppComponent {
   }
 
   approveAll(): void{
+    this.approveAllClicked = true;
     for(let i of this.students){
       if(!i.atRisk){
         i.approvalStatus = models.ApprovalStatus.APPROVED;
@@ -105,6 +107,7 @@ export class AppComponent {
   }
 
   approveStudent(): void{
+    this.approveAllClicked = false;
     this.selectedStudent.approvalStatus = models.ApprovalStatus.APPROVED;
     this.downloadRequestObject();
     
@@ -117,26 +120,41 @@ export class AppComponent {
   }
 
   rejectStudent(): void{
+    this.approveAllClicked = false;
     this.selectedStudent.approvalStatus = models.ApprovalStatus.REJECTED;
     this.downloadRequestObject();
   }
 
 
   outFunction(): models.ApprovalRequest[]{
+    
     let tempData: models.ApprovalRequest[] = []; 
-    for(let i=0; i<this.students.length; i++){
-      // let this.tempData = {};
-      // this.tempData.isApproved = (this.students[i].approvalStatus == models.ApprovalStatus.APPROVED);
-      // this.tempData.rollNo = this.students[i].rollNo;
-      // this.tempData.remarks = this.students[i].approvalRemarks;
+    if(this.approveAllClicked){
+      for(let i=0; i<this.students.length; i++){
+        // let this.tempData = {};
+        // this.tempData.isApproved = (this.students[i].approvalStatus == models.ApprovalStatus.APPROVED);
+        // this.tempData.rollNo = this.students[i].rollNo;
+        // this.tempData.remarks = this.students[i].approvalRemarks;
+        if(this.students[i].atRisk == false){
+          let student: models.ApprovalRequest = {
+            isApproved : (this.students[i].approvalStatus == models.ApprovalStatus.APPROVED),
+            rollNo : this.students[i].rollNo,
+            remarks : this.students[i].approvalRemarks
+          }
+
+          tempData.push(student);
+        }
+        
+      }
+    }
+    else{
       let student: models.ApprovalRequest = {
-        isApproved : (this.students[i].approvalStatus == models.ApprovalStatus.APPROVED),
-        rollNo : this.students[i].rollNo,
-        remarks : this.students[i].approvalRemarks
+        isApproved : (this.selectedStudent.approvalStatus == models.ApprovalStatus.APPROVED),
+        rollNo : this.selectedStudent.rollNo,
+        remarks : this.selectedStudent.approvalRemarks
       }
 
       tempData.push(student);
-      
     }
 
     // console.log(tempData);
