@@ -113,11 +113,15 @@
 
         <!-- Search bar -->
         <div class="input-group mb-3">
-          <span class="input-group-text btn btn-secondary" id="basic-addon1">Search Student</span>
-          <input type="text" class="form-control" placeholder="Enter a student name or Roll No" aria-label="Username"
-            aria-describedby="basic-addon1" [(ngModel)]="student" (input)="searchResult()">
-            <br>
-            <!-- <p> {{student}} </p> -->
+          <button class="input-group-text btn btn-secondary" (click)="searchClick()" id="basic-addon1">Search
+            Student</button>
+          <input type="text" class="form-control"
+            placeholder="Enter a student name or Roll No and click Search Student to the Left" aria-label="Username"
+            aria-describedby="basic-addon1" [(ngModel)]="student" [ngbTypeahead]="search"
+            (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)"
+            #instance="ngbTypeahead">
+
+          <!-- <p> {{student}} </p> -->
 
         </div>
 
@@ -127,8 +131,8 @@
         <!-- Else if input is not given and student is not selected: Ok -> Study + fail = F-->
 
         <!-- Not input -> Not selected -->
-        @if (student) {
-        <!-- Table of available students -->
+        <!-- @if (student) {
+         Table of available students 
         <div class="container-fluid list-group">
 
           @for (item of students; track $index) {
@@ -136,21 +140,8 @@
           <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}} </button>
 
           }
-
-          <!-- <label for="typeahead-focus">Search for a state:</label>
-          <input id="typeahead-focus" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"
-            (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)"
-            #instance="ngbTypeahead" />
-
-          <hr />
-          <pre>Model: {{ model | json }}</pre> -->
-
-          <!-- <button type="button" class="list-group-item list-group-item-action" (click)="downloadRequestObject()">Download Network Data</button> -->
         </div>
-        }
-        <!-- @if (!student || selectedStudent) {} -->
-        <!-- A: selectedStudent && !student -->
-        <!-- B: student && selectedStudent -->
+        } -->
 
         @if((displayFlag)){
         <br>

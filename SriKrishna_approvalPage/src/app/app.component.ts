@@ -31,6 +31,7 @@ export class AppComponent {
   // notAtRiskandApproved: boolean = true;
   inputRemark: string = '';
   students: models.StudentInfo[] = Studentinfo;
+  rollNos: string[] = [];
 
   student: string = '';
   displayedData: models.StudentInfo[] = [];
@@ -39,7 +40,15 @@ export class AppComponent {
 
   displayText: string = '';
 
-  model: string = '';
+  // model: string = '';
+  stringIfy(): void{
+    for(let i of this.students){
+      this.rollNos.push(i.rollNo);
+    }
+    return;
+  }
+
+
   preApproveAll(): boolean{
     for(let i = 0; i < this.students.length; i++){
       if(this.students[i].approvalStatus != models.ApprovalStatus.APPROVED && this.students[i].atRisk == false)
@@ -73,14 +82,7 @@ export class AppComponent {
   //   return true;
   // }
 
-  searchResult(): string{
-    // console.log(this.student);
-    this.displayFlag = (this.student != '');
-    this.displayedData = this.students.filter(c => this.filterStudent(c));
-
-    return this.displayedData.toString();
-    // console.log(this.displayedData);
-  }
+  
 
 
   onClick(student: models.StudentInfo): void{
@@ -105,6 +107,14 @@ export class AppComponent {
   approveStudent(): void{
     this.approveAllClicked = false;
     this.selectedStudent.approvalStatus = models.ApprovalStatus.APPROVED;
+
+    if(this.inputRemark == ''){
+      this.selectedStudent.approvalRemarks = 'No Remarks Given';
+    }
+    else{
+      this.giveRemark();
+    }
+
     this.downloadRequestObject();
     
   }
@@ -186,21 +196,49 @@ export class AppComponent {
     window.URL.revokeObjectURL(url);
   }
 
+  // Logic for type ahead
   @ViewChild('instance', { static: true })
   instance!: NgbTypeahead;
 
 	focus$ = new Subject<string>();
 	click$ = new Subject<string>();
 
-	search: OperatorFunction<string, readonly models.StudentInfo[]> = (text$: Observable<string>) => {
+	search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
 		const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
 		const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
 		const inputFocus$ = this.focus$;
+    
+    this.stringIfy();
+    const RollNo_list = this.rollNos;
 
 		return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
 			map((term) =>
-				(term === '' ? this.students : this.students.filter((v) => this.filterStudent(v))).slice(0, 10),
+				(term === '' ? this.rollNos : this.rollNos.filter((v) => {
+          if(v.includes(this.student)){
+            return true;
+          }
+          return false;
+        })).slice(0, 10),
 			),
 		);
 	};
+
+  // searchResult(): string{
+  //   // console.log(this.student);
+  //   this.displayFlag = (this.student != '');
+  //   this.displayedData = this.students.filter(c => this.filterStudent(c));
+
+  //   return this.displayedData.toString();
+  //   // console.log(this.displayedData);
+  // }
+
+  searchClick(){
+    for(let student of this.students){
+      if(student.rollNo == this.student){
+        this.selectedStudent = student;
+        this.displayFlag = true;
+        return;
+      }
+    }
+  }
 }
