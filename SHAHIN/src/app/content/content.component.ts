@@ -7,10 +7,8 @@ import { NgbAccordionModule, NgbActiveModal, NgbDropdownModule, NgbModal, NgbMod
 import { Observable, OperatorFunction, debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { ApprovalStatus, StudentInfo, StudentInfoGetRequest } from './studentinfo.model';
 import { ServiceService } from '../service.service';
-import { RouterOutlet } from '@angular/router';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {  faPlus } from '@fortawesome/free-solid-svg-icons';
-import bootstrap from '../../main.server';
+
+
 
 
 
@@ -28,8 +26,7 @@ import bootstrap from '../../main.server';
   NgClass, 
   NgbAccordionModule, 
   NgbModule, 
-  NgStyle,
-  FontAwesomeModule],
+  NgStyle,],
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.css']
 })

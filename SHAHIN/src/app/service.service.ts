@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { StudentInfo, StudentInfoGetRequest } from './content/studentinfo.model';
+import {  StudentInfoGetRequest } from './content/studentinfo.model';
 import { catchError, map, tap } from 'rxjs/operators';
 
 
