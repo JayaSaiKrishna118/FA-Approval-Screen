@@ -1,16 +1,16 @@
 <!-- <p>student works!</p> -->
 <style>
-  .table{
+  .table {
     height: auto;
   }
 </style>
 
 
 @if (student) {
-<div class="container-fluid">
+
 
   <div class="row g-3 justify-content-center">
-    <div class="card col-5 me-2 border border-dark">
+    <div class="card col-6 me-2 border border-dark">
       <div class="card-body">
         <h2> Student Details</h2>
         <div class="container-fluid border border-dark">
@@ -34,13 +34,13 @@
     </div>
   </div>
 
-</div>
+
 <br>
 <div class="row g-3 justify-content-center">
 
-  <div class="card col-5 me-2 border border-dark">
+  <div class="card col-6 me-2 border border-dark">
 
-    <div class="card-body"> 
+    <div class="card-body">
       <!-- <div ngbAccordion>
         <div ngbAccordionItem>
           <h2 ngbAccordionHeader>
@@ -175,6 +175,50 @@
 
     </div>
   </div>
+
+  <div ngbAccordion>
+    <div ngbAccordionItem>
+      <h2 ngbAccordionHeader>
+        <button ngbAccordionButton class="btn btn-info">Past Courses</button>
+      </h2>
+      <div ngbAccordionCollapse>
+        <div ngbAccordionBody>
+          <ng-template>
+            <h2>Courses done in  previous semesters</h2>
+            <table class="table table-bordered border border-dark">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Code</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Credits Acquired</th>
+                  <th scope="col">Total Credits</th>
+                </tr>
+              </thead>
+      
+              <tbody>
+                @for (item of student.pastCourses; track $index) {
+                <tr>
+                  <th scope="row"> {{$index + 1}} </th>
+                  <td> {{item.code}} </td>
+                  <td> {{item.name}} </td>
+                  <td> {{item.creditsAcquired}} </td>
+                  <td> {{item.totalCredits}} </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <br>
+    <h2>CGPA: {{student.CGPA}} </h2> 
+  </div>
+
 
 </div>
 }

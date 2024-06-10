@@ -218,4 +218,30 @@ export const Studentinfo : StudentInfo[] = [
             "approvalStatus" : ApprovalStatus.PENDING,
             "approvalRemarks" : "No remarks"
         },
+
+        {
+            "rollNo" : "11CE00110",
+            "name" : "Vikas",
+            "program" : "BTECH",
+            "atRisk" : true,
+            "riskDecs" : "Insufficient credits",
+            "coreCourses" : [
+                {
+                    "code" : "PH2020",
+                    "name" : "QM",
+                    "credits" : 3,
+                    "slot" : "B"
+                }
+            ],
+            "electiveCredits" : [
+                {
+                    "code" : "PME",
+                    "min" : 2,
+                    "max" : 4
+                }
+            ],
+            "approvalStatus" : ApprovalStatus.APPROVED,
+            "approvalRemarks" : "No remark"
+        },
+
     ]

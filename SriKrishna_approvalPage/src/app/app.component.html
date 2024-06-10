@@ -35,7 +35,9 @@
     <div class="card col-3 border border-dark justify-content-center me-2">
       <div class="card-body">
 
-        <!-- At risk -->
+
+
+        <!-- At risk
         <div ngbAccordion>
           <div ngbAccordionItem>
             <h2 ngbAccordionHeader>
@@ -63,7 +65,7 @@
           </div>
         </div>
 
-        <!-- Not at risk -->
+         Not at risk 
         <div ngbAccordion>
           <div ngbAccordionItem>
             <h2 ngbAccordionHeader>
@@ -92,7 +94,7 @@
 
               </div>
 
-              <!-- Condition to display approve all -->
+               Condition to display approve all 
               @if (preApproveAll()) {
               <div class="container-fluid justify-content-center">
                 <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
@@ -101,7 +103,146 @@
               }
             </div>
           </div>
+        </div> -->
+
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn btn-warning">Pending</button>
+            </h2>
+            <div ngbAccordionCollapse>
+              <div ngbAccordionBody>
+                <ng-template>
+
+                  <div ngbAccordion>
+                    <div ngbAccordionItem>
+                      <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton class="btn btn-danger">At risk</button>
+                      </h2>
+                      <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                          <ng-template>
+                            <ul class="list-group">
+                              @for (item of students; track $index) {
+          
+                              @if (item.atRisk && wasPending(item)) {
+                              <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}}
+                              </button>
+                              }
+                              }
+          
+          
+                            </ul>
+          
+                          </ng-template>
+          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+          
+                   <!-- Not at risk  -->
+                  <div ngbAccordion>
+                    <div ngbAccordionItem>
+                      <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton class="btn btn-success">Not at risk</button>
+                      </h2>
+                      <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+          
+                          <ng-template>
+          
+                            <ul class="list-group">
+                              @for (item of students; track $index) {
+          
+                              @if (!item.atRisk && wasPending(item)) {
+                              <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}}
+          
+                              </button>
+                              }
+                              }
+          
+                            </ul>
+          
+                          </ng-template>
+          
+          
+          
+                        </div>
+          
+                         <!-- Condition to display approve all  -->
+                        @if (preApproveAll()) {
+                        <div class="container-fluid justify-content-center">
+                          <button class="btn btn-success justify-content-center me-1 mb-1" (click)="approveAll()">Approve
+                            all</button>
+                        </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+
+                </ng-template>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn btn-success">Accepted</button>
+            </h2>
+            <div ngbAccordionCollapse>
+              <div ngbAccordionBody>
+                <ng-template>
+                  <ul class="list-group">
+                    @for (item of students; track $index) {
+
+                    @if (wasApproved(item)) {
+                    <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}}
+                    </button>
+                    }
+                    }
+
+
+                  </ul>
+
+                </ng-template>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ngbAccordion>
+          <div ngbAccordionItem>
+            <h2 ngbAccordionHeader>
+              <button ngbAccordionButton class="btn btn-danger">Rejected</button>
+            </h2>
+            <div ngbAccordionCollapse>
+              <div ngbAccordionBody>
+                <ng-template>
+                  <ul class="list-group">
+                    @for (item of students; track $index) {
+
+                    @if (wasRejected(item)) {
+                    <button class="btn btn-info list-group-item" (click)="onClick(item)"> {{item.rollNo}}
+                    </button>
+                    }
+                    }
+
+
+                  </ul>
+
+                </ng-template>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
 
       </div>
     </div>
@@ -146,7 +287,7 @@
         @if((displayFlag)){
         <br>
         <app-student [student]="selectedStudent"></app-student>
-        @if(!wasApproved(selectedStudent)){
+        @if(wasPending(selectedStudent)){
         <br>
         <div class="container-fluid">
           <div class="input-group mb-3">
@@ -165,12 +306,19 @@
         </div>
         }
 
-        @else {
+        @else if(wasApproved(selectedStudent)) {
         <br>
         <div class="container">
-          This student has already been approved!
+          This student has been approved successfully!
         </div>
         }
+        @else {
+          <br>
+          <div class="container">
+            This student has been rejected.
+          </div>
+        }
+
         }
         <!-- @else if (student) {
               <app-student [student]="selectedStudent"></app-student>

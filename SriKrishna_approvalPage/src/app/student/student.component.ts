@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import * as models from '../../../Skeleton';
+import * as models from '../types/Skeleton';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 

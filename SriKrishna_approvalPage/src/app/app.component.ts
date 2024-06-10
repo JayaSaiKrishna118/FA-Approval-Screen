@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { NgbModule, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Studentinfo } from '../../students.json';
 // import '../../Skeleton' ;
-import * as models from '../../Skeleton';
+import * as models from './types/Skeleton';
 import { NgFor, NgIf } from '@angular/common';
 import { StudentComponent } from './student/student.component';
 import { Observable, Subject, merge, OperatorFunction } from 'rxjs';
@@ -12,6 +12,7 @@ import { ViewChild } from '@angular/core';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { STUDENTS } from './types/input.json';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ export class AppComponent {
 
   // notAtRiskandApproved: boolean = true;
   inputRemark: string = '';
-  students: models.StudentInfo[] = Studentinfo;
+  students: models.StudentInfo[] = STUDENTS;
   rollNos: string[] = [];
 
   student: string = '';
@@ -75,15 +76,17 @@ export class AppComponent {
     return false;
   }
 
-  // isSelected(): boolean{
-  //   this.displayFlag = true;
-  //   if(!this.selectedStudent)
-  //     return false;
-  //   return true;
-  // }
+  wasRejected(student: models.StudentInfo): boolean{
+    if(student.approvalStatus == models.ApprovalStatus.REJECTED){
+      return true;
+    }
+    return false;
+  }
 
-  
-
+  wasPending(student: models.StudentInfo): boolean{
+    if(student.approvalStatus == models.ApprovalStatus.PENDING) return true;
+    return false;
+  }
 
   onClick(student: models.StudentInfo): void{
     this.displayFlag = true;
@@ -96,7 +99,7 @@ export class AppComponent {
   approveAll(): void{
     this.approveAllClicked = true;
     for(let i of this.students){
-      if(!i.atRisk){
+      if(!i.atRisk && i.approvalStatus == models.ApprovalStatus.PENDING){
         i.approvalStatus = models.ApprovalStatus.APPROVED;
       }
     }
@@ -232,7 +235,7 @@ export class AppComponent {
   //   // console.log(this.displayedData);
   // }
 
-  searchClick(){
+  searchClick(): void{
     for(let student of this.students){
       if(student.rollNo == this.student){
         this.selectedStudent = student;
