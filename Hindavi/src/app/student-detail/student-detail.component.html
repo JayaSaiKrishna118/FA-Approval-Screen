@@ -1,0 +1,121 @@
+<div id="detail-component">
+  <div class="card">
+    <h2 class="title"><b>Student Details</b></h2>
+    <p>Roll No : 2022002</p>
+    <p>Name : Jane Smith</p>
+    <p>Department : Computer Science</p>
+
+    <p>
+      <a
+        id="coreCoursebtn"
+        class="btn btn-outline-primary"
+        data-toggle="collapse"
+        role="button"
+        aria-expanded="false"
+        data-bs-target="#coreCoursesCollapse"
+        aria-controls="coreCoursesCollapse"
+        (click)="getCoreCourses()"
+        >Core Courses</a
+      >
+      <a
+        class="btn btn-outline-primary"
+        data-toggle="collapse"
+        role="button"
+        aria-expanded="false"
+        data-bs-target="#electiveCollapse"
+        aria-controls="electiveCollapse"
+        (click)="getElectives()"
+      >
+        Elective
+      </a>
+    </p>
+    <div class="row">
+      @if (isCollapsedCore) {
+      <div class="col">
+        <div class="collapse multi-collapse show" id="coreCoursesCollapse">
+          <div class="card card-body">
+            <ul class="coreCourses">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Course Code</th>
+                    <th>Course Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (coreCorse of coreCourses; track coreCorse.code) {
+                  <tr>
+                    <td>{{ coreCorse.code }}</td>
+                    <td>{{ coreCorse.name }}</td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </ul>
+          </div>
+        </div>
+      </div>
+      } @if (isCollapseElective){
+      <div class="col">
+        <div class="collapse multi-collapse show" id="electiveCollapse">
+          <div class="card card-body">
+            <ul class="electives">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Minimum Credits Planned</th>
+                    <th>Maximum Credits Planned</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (elective of electiveCredits; track elective.code) {
+                  <tr>
+                    <td>{{ elective.code }}</td>
+                    <td>{{ elective.min }}</td>
+                    <td>{{ elective.max }}</td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </ul>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div>
+      <h2 class="title"><b>Risk Description</b></h2>
+      <!-- <fa-icon [icon]="faSearch" id="search_icon"></fa-icon> -->
+      <div class="risk-desc">
+        <form class="d-flex" >
+          <input class="form-control" type="text" id="risk-desc-input" />
+        </form>
+      </div>
+      <div class="remark-container">
+        <textarea
+        class="remark-input"
+        [(ngModel)]="remarks"
+        rows="1"
+        (input)="autoGrowTextZone($event)"
+        placeholder="Remarks"
+      ></textarea>
+
+      </div>
+      
+    </div>
+    <div class="row" id="btns">
+      <div class="col">
+        <button
+          class="btn btn-success"
+          (click)="approveStudent()"
+          id="btn-approve"
+        >
+          Approve
+        </button>
+        <button class="btn btn-danger" (click)="rejectStudent()">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>

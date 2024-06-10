@@ -1,0 +1,22 @@
+<h3>Search Student : </h3>
+<div id="search-component">
+  
+  <form class="d-flex search_form" (submit)="fetchStudentDetails(searchBox.value)">
+    <input #searchBox id="search-box" class="form-control" (input)="search(searchBox.value)" type="search" placeholder="Enter Roll No" aria-label="Search">
+    <fa-icon [icon]="faSearch" id="search_icon"></fa-icon>
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+  </form>
+  
+  <ul class="search-result">
+    <table class="table">
+        <tbody>
+            @for (student of students; track student.rollNo ) {
+                <tr (click)="selectStudent(student)">
+                    <td>{{student.rollNo}}</td>
+                    <td>{{student.name}}</td>
+                </tr>
+            }
+          </tbody>
+    </table>
+  </ul>
+</div>

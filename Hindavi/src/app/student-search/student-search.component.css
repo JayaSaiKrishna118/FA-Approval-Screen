@@ -1,0 +1,18 @@
+#search-box{
+    border-radius: 10px;
+    border-top-right-radius: 0%;
+    border-bottom-right-radius: 0%;
+    padding-left: 30px;
+}
+
+#search_icon {
+    position: absolute;
+    left: 30px;
+    top: 78px;
+    transform: translateY(-50%);
+  }
+
+.search-container {
+    position: relative;
+    
+  }
