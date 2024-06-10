@@ -1,0 +1,260 @@
+<!--Container 1-->
+<div class="container p-3">
+    <div class="row h-100 mt-5">
+        <!-- Scroll bar & fixed frame -->
+        <div class="col-12 px-5 py-5 border border-warning" style="height: 80vh; overflow-y: auto;">
+            <!--Container 1.1-->
+            <div class="container overflow-hidden">
+                <div class="row gx-5">
+                    <!-- Left column for accordions -->
+                    <div class="col-lg-4 left_col">
+                        <div class="row mb-3">
+                            <!-- Accordion for students at risk -->
+                            <div ngbAccordion>
+                                <div ngbAccordionItem>
+                                    <h2 ngbAccordionHeader>
+                                        <button ngbAccordionButton class="btn w-100 btn-outline-warning font-weight-bold" >
+                                        AtRisk
+                                        </button> 
+                                    </h2>
+                                    <div ngbAccordionCollapse>
+                                        <div ngbAccordionBody *ngFor="let student of getStudentsAtRisk(); let i = index">
+                                            <div class="dropdown-item" (click)="selectStudent(student)">
+                                                {{ student.rollNo }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <!-- Accordion for students not at risk -->
+                            <div ngbAccordion>
+                                <div ngbAccordionItem>
+                                    <h2 ngbAccordionHeader>
+                                        <button ngbAccordionButton class="btn w-100 btn-outline-warning font-weight-bold" (click)="toggleApproveAllButton()">
+                                            NotAtRisk
+                                        </button>
+                                    </h2>
+                                    <div ngbAccordionCollapse>
+                                        <div ngbAccordionBody *ngFor="let student of getStudentsNotAtRisk(); let i = index">
+                                            <div class="dropdown-item" (click)="selectStudent(student)">
+                                                {{ student.rollNo }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-3">
+                            <button class="btn w-50 btn-outline-success btn-lg" [hidden]="!showApproveAllButton || getStudentsNotAtRisk().length===0"  (click)="openConfirmationModal()">Approve All</button>
+                            <!-- Modal Template -->
+                            <ng-template #confirmationModal let-modal>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to approve the selected students?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+                                <button type="button" class="btn btn-primary" (click)="confirmApproveAll(modal)">Approve All</button>
+                            </div>
+                            </ng-template>
+                        </div>
+                       
+                        <div class="row mb-3">
+                            <!-- Accordion for approved students -->
+                            <div ngbAccordion>
+                                <div ngbAccordionItem>
+                                    <h2 ngbAccordionHeader>
+                                        <button ngbAccordionButton class="btn w-100 btn-outline-warning font-weight-bold">
+                                            Approved Students
+                                        </button>
+                                    </h2>
+                                    <div ngbAccordionCollapse>
+                                        <div ngbAccordionBody *ngFor="let student of getApprovedStudents(); let i = index">
+                                            <div class="dropdown-item" (click)="selectStudent(student)">
+                                                {{ student.rollNo }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <!-- Accordion for rejected students -->
+                            <div ngbAccordion>
+                                <div ngbAccordionItem>
+                                    <h2 ngbAccordionHeader>
+                                        <button ngbAccordionButton class="btn w-100 btn-outline-warning font-weight-bold">
+                                            Rejected Students
+                                        </button>
+                                    </h2>
+                                    <div ngbAccordionCollapse>
+                                        <div ngbAccordionBody *ngFor="let student of getRejectedStudents(); let i = index">
+                                            <div class="dropdown-item" (click)="selectStudent(student)">
+                                                {{ student.rollNo }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right column for student details -->
+                    <div class="col-lg-8">
+                        <div class="p-3 border border-warning bg-light">
+                            <!-- Search bar implementation -->
+                            <label for="typeahead-basic"class="fw-bold"style="color:  #df8343; " >Search here:</label>
+                            <input id="typeahead-basic"  placeholder="Enter RollNo or Name" type="text" class="form-control" [ngModel]="selectedStudent?.name" [ngbTypeahead]="search" (selectItem)="onStudentSelected($event)" [resultFormatter]="formatResult" />
+                            @if (selectedStudent) {
+                                <div class="col-12 border p-4">
+                                    <div class="row mb-3">
+                                        <!-- Student details -->
+                                        <div class="col-12">
+                                            <h5  class="fw-bold"style="color: #df8a50;">Student Details</h5>
+                                        </div>
+                                        <div class="col-6">
+                                            <p style="color: #130000;">
+                                                <span class="fw-bold" style="color: #df8a50;">Name:</span> {{ selectedStudent.name }}
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="col-6">
+                                            <p style="color: #130000;">
+                                                <span class="fw-bold" style="color: #df8a50;">Department:</span> {{ selectedStudent.program }}
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p style="color: #130000;">
+                                                <span class="fw-bold" style="color: #df8a50;">RollNo:</span> {{ selectedStudent.rollNo }}
+                                            </p>
+                                        </div>
+                                        
+                                    </div>
+                                    <!-- Tables for courses -->
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <h5  class="fw-bold"style="color:  #df8343; ">Core Courses</h5>
+                                         
+                                            <table class="table table-bordered border-4" >
+                                                <thead>
+                                                    <tr>
+                                                        <th style="color: white; background-color: #df8343; width:30%">Course Code</th>
+                                                        <th style="color: white; background-color: #df8343;width:70% ">Course Name</th>
+                                                      
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let course of selectedStudent?.coreCourses; let i = index">
+                                                        <td>
+                                                            <input type="text" style="color: #130000;" [(ngModel)]="selectedStudent.coreCourses[i].code" class="form-control" readonly/>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" style="color: #130000;" [(ngModel)]="selectedStudent.coreCourses[i].name" class="form-control" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="col-12 col-md-6">
+                                            <h5 class="fw-bold"style="color:  #df8343; ">Elective Courses</h5>
+                                            <table class="table table-bordered border-4">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="color: white; background-color: #df8343;width:50%">Code</th>
+                                                        <th style="color: white; background-color: #df8343;width:25%">Minimum Credits Planned</th>
+                                                        <th style="color: white; background-color: #df8343; width:25%">Maximum Credits Planned</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let course of selectedStudent?.electiveCredits; let i = index">
+                                                        <td>
+                                                            <input type="text" style="color: #130000;" [(ngModel)]="selectedStudent.electiveCredits[i].code" class="form-control" readonly/>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" style="color: #130000;" [(ngModel)]="selectedStudent.electiveCredits[i].min" class="form-control" readonly/>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" style="color: #130000;" [(ngModel)]="selectedStudent.electiveCredits[i].max" class="form-control" readonly/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Risk description -->
+                                    <div class="row mb-3">
+                                        <label class="form-label col-3 fw-bold"  style="color:  #df8343; ">Risk Description:</label>
+                                        <div class="col-9">
+                                            <p style="color: #130000;">{{ selectedStudent.riskDesc }}</p>
+                                        </div>
+                                    </div>
+                                    @if (selectedStudent.approvalStatus === ApprovalStatus.PENDING) {
+                                    <!-- Form for remarks -->
+                                    <div class="mb-3">
+                                        <label for="approvalRemarks" class="form-label fw-bold" style="color:#df8343; ">Remarks:</label>
+                                        <input type="text" class="form-control" id="approvalRemarks"  [(ngModel)]="approvalRemarks">
+                                    </div>
+                                    <!-- Approve/reject buttons -->
+                                    <div class="row p-3">
+                                        <div class="mb-3 w-100 d-flex ">
+                                            <button class="btn w-50 mx-1 btn-outline-success btn-lg btn-md" (click)="openApproveModal()">Approve</button>
+                                            <button class="btn w-50 mx-1 btn-outline-danger btn-lg btn-md" (click)="openRejectModal()">Reject</button>
+                                            <!-- Approve Modal Template -->
+                                            <ng-template #approveModal let-modal>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approveModalLabel">Confirmation</h5>
+                                                    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to approve this student?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+                                                    <button type="button" class="btn btn-primary" (click)="confirmApprove(modal)">Approve</button>
+                                                </div>
+                                            </ng-template>
+                                            <!-- Reject Modal Template -->
+                                            <ng-template #rejectModal let-modal>
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="rejectModalLabel">Confirmation</h5>
+                                                    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to reject this student?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+                                                    <button type="button" class="btn btn-primary" (click)="confirmReject(modal)">Reject</button>
+                                                </div>
+                                            </ng-template>
+                                        </div>
+                                    </div>
+                                    }
+                                    <!-- Tag section -->
+                                    @if (selectedStudent.approvalStatus != ApprovalStatus.PENDING) {
+                                    <div class="row justify-content-center">
+                                        <div class="badge text-wrap d-flex justify-content-center align-items-center" style="width: 10rem; height: 2rem; font-size: 15px"
+                                            [ngClass]="{
+                                            'bg-danger text-white': selectedStudent.approvalStatus === ApprovalStatus.REJECTED,
+                                            'bg-success text-white': selectedStudent.approvalStatus === ApprovalStatus.APPROVED
+                                            }">
+                                            {{ selectedStudent.approvalStatus === ApprovalStatus.REJECTED ? 'Rejected' : 'Approved' }}
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
