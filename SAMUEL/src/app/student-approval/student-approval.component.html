@@ -1,0 +1,21 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm rounded-0 " style="min-height: 100%;">
+                <div class="card-body">
+                    <app-student-risk [studentsInfo]="studentsInfo" (updateStudentList)="updateStudentList($event)"></app-student-risk>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm rounded-0 border-0 ">
+                <div class="card-body">
+                    <app-student-search [studentsInfo]="studentsInfo" ></app-student-search>                    
+                </div>
+                <div class="shadow">                    
+                    <router-outlet></router-outlet>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>

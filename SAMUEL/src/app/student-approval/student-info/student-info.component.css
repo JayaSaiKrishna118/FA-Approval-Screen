@@ -1,0 +1,3 @@
+button[ngbAccordionButton]::after {
+    display: none;
+}

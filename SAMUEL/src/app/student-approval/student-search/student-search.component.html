@@ -1,0 +1,22 @@
+<div class="form-group row">
+  <label for="student-search-box" class="col-form-label col-auto text-dark">Search Student:</label>
+  <div class="col">
+    <input type="text" name="student-search-box" id="student-search-box" class="form-control bg-light border border-bottom border-2"
+    [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter"
+    (focus)="focus$.next($any($event).target.value)"
+    (click)="click$.next($any($event).target.value)" placeholder="Search...">
+  </div>
+</div>
+
+<ng-template #rt let-r="result" let-t="term">
+  <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom py-2 w-100"
+       style="cursor: pointer;"
+       [routerLink]="['/student-approval', r.rollNo]">
+    <div class="col-auto">
+      <span  class="text-decoration-none mx-2 badge badge bg-dark">{{ r.rollNo }}</span>
+    </div>
+    <div class="col">
+      <span class="d-block">{{ r.name }}</span>
+    </div>
+  </div>
+</ng-template>
