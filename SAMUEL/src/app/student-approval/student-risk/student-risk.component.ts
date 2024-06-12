@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbAccordionModule, NgbAlertModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
-import { ApprovalRequest, StudentInfo,ApprovalStatus } from '../../models';
+import { ApprovalRequest, StudentInfo, ApprovalStatus } from '../../models';
 import { HttpClientModule } from '@angular/common/http';
 import { JsonUtils } from '../../utils/json-utils';
+import { StudentInfoService } from '../services/student-info.service';
 
 interface NavDataItem {
   id: number;
@@ -17,15 +18,15 @@ interface NavDataItem {
 interface NavData {
   [key: string]: NavDataItem;
 }
+
 @Component({
   selector: 'app-student-risk',
   standalone: true,
-  imports: [ CommonModule, HttpClientModule,FormsModule, NgbAccordionModule, NgbNavModule, NgbAlertModule, NgbAlertModule, RouterModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, NgbAccordionModule, NgbNavModule, NgbAlertModule, RouterModule],
   templateUrl: './student-risk.component.html',
   styleUrl: './student-risk.component.css'
 })
-export class StudentRiskComponent implements OnInit {
-  @Output() updateStudentList = new EventEmitter<StudentInfo[]>();
+export class StudentRiskComponent implements OnInit, OnChanges {
   nav_data: NavData = {
     PENDING: {
       id: 1,
@@ -56,7 +57,7 @@ export class StudentRiskComponent implements OnInit {
   alertMessage = signal('');
 
   @Input() studentsInfo: StudentInfo[] = [];
-
+  @Output() approveStudents = new EventEmitter<StudentInfo[]>();
   ngOnInit(): void {
     this.populateAllData();
   }
@@ -83,20 +84,17 @@ export class StudentRiskComponent implements OnInit {
     );
   }
 
-  approveAllStudents(studentList: StudentInfo[]): void {
+  approveAll(studentList: StudentInfo[]): void {
     let approveRequests: ApprovalRequest[] = studentList.map(s => ({
       rollNo: s.rollNo,
       isApproved: true,
       remarks: ''
     }));
 
-   
-
-    this.updateStudentList.emit(studentList);
-    this.allApproved.set(true);
-
+    this.approveStudents.emit(studentList)
     JsonUtils.download(approveRequests);
     this.showAlertMessage(`All students have been APPROVED successfully!`);
+    this.allApproved.set(true);
   }
 
   showAlertMessage(message: string): void {

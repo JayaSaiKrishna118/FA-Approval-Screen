@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { StudentInfo, StudentInfoGetRequest } from '../../models';
-import { Observable, catchError, map, of } from 'rxjs';
+import { ApprovalStatus, StudentInfo, StudentInfoGetRequest } from '../../models';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,27 +9,55 @@ import { Observable, catchError, map, of } from 'rxjs';
 export class StudentInfoService {
 
   private jsonURL = 'assets/student_info_data.json';
+  private studentsSubject = new BehaviorSubject<StudentInfo[]>([]);
+  students$ = this.studentsSubject.asObservable();
+  constructor(private http: HttpClient) { 
+    this.loadStudents()
+  }
 
-  constructor(private http: HttpClient) { }
+ 
+  
+  private loadStudents(): void {
+    this.http.get<StudentInfoGetRequest>(this.jsonURL).pipe(
+      tap(students => this.studentsSubject.next(students.info))
+    ).subscribe();
+  }
 
+  getStudents(): Observable<StudentInfo[]> {
+    return this.students$;
+  }
 
-  getStudentsInfo(): Observable<StudentInfoGetRequest> {
-    return this.http.get<StudentInfoGetRequest>(this.jsonURL).pipe(
-      catchError(this.handleError<StudentInfoGetRequest>('getStudentsInfo', { info: [] }))
+  getStudent(rollNo: string): Observable<StudentInfo | undefined> {
+    return this.students$.pipe(
+      map(students => students.find(student => student.rollNo === rollNo))
     );
   }
 
-  getStudentInfo(rollNo: string): Observable<StudentInfo | undefined> {
-    return this.getStudentsInfo().pipe(
-      map(data => data.info.find(student => student.rollNo === rollNo)),
-      catchError(this.handleError<StudentInfo>('getStudentInfo'))
+  updateStudent(updatedStudent: StudentInfo): void {
+    const currentStudents = this.studentsSubject.value;
+    const updatedStudents = currentStudents.map(student =>
+      student.rollNo === updatedStudent.rollNo ? updatedStudent : student
     );
+    console.log("UPDATING ", updatedStudent)
+    this.studentsSubject.next(updatedStudents);
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error); // log to console instead
-      return of(result as T);
-    };
+  approveStudent(student:StudentInfo): void {
+    const currentStudents = this.studentsSubject.value.map(std =>
+      std.rollNo === student.rollNo
+        ? { ...student, approvalStatus: ApprovalStatus.APPROVED }
+        : student
+    );
+    this.studentsSubject.next(currentStudents);
+  }
+  
+
+  approveAllStudents(studentList: StudentInfo[]): void {
+    const currentStudents = this.studentsSubject.value.map(student =>
+      studentList.some(s => s.rollNo === student.rollNo)
+        ? { ...student, approvalStatus: ApprovalStatus.APPROVED }
+        : student
+    );
+    this.studentsSubject.next(currentStudents);
   }
 }

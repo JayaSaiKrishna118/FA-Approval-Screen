@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NgbAccordionCollapse,NgbAccordionItem, NgbAccordionModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ApprovalRequest, ApprovalStatus, StudentInfo } from '../../models';
@@ -16,12 +16,12 @@ import { JsonUtils } from '../../utils/json-utils';
   templateUrl: './student-info.component.html',
   styleUrl: './student-info.component.css'
 })
-export class StudentInfoComponent implements OnInit {
+export class StudentInfoComponent implements OnInit, OnChanges {
   approvalStatus = ApprovalStatus;
   studentInfo!: StudentInfo;
   approvalForm!: FormGroup;
 
-  @Output() studentInfoUpdated = new EventEmitter<StudentInfo>();
+  @Output() studentUpdated = new EventEmitter<StudentInfo>();
   showAlert = false;
   alertMessage = '';
   isCoreHovered = false;
@@ -29,7 +29,6 @@ export class StudentInfoComponent implements OnInit {
 
   @ViewChild('coreCoursesPanel') coreCoursesPanel: NgbAccordionItem | undefined;
   @ViewChild('electiveCoursesPanel') electiveCoursesPanel: NgbAccordionItem | undefined;
-
   
   constructor(
     private fb: FormBuilder,
@@ -45,13 +44,20 @@ export class StudentInfoComponent implements OnInit {
       this.getStudentInfo(rollNo);
     });
   }
-
-
-
-  ngAfterViewInit() {
-    console.log('Core Courses Panel:', this.coreCoursesPanel);
-    console.log('Elective Courses Panel:', this.electiveCoursesPanel);
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['studentInfo'] && changes['studentInfo'].currentValue) {
+      this.updateForm(changes['studentInfo'].currentValue);
+    }
   }
+
+  updateForm(student: StudentInfo): void {
+    this.approvalForm.patchValue({
+      remarks: student.approvalRemarks,
+      approvalStatus: student.approvalStatus
+    });
+  }
+
 
   buildApprovalForm() {
     this.approvalForm = this.fb.group({
@@ -60,7 +66,7 @@ export class StudentInfoComponent implements OnInit {
   }
 
   getStudentInfo(rollNo: string): void {
-    this.studentInfoService.getStudentInfo(rollNo).subscribe({
+    this.studentInfoService.getStudent(rollNo).subscribe({
       next: data => {
         if (data) {
           this.studentInfo = data;
@@ -125,21 +131,18 @@ export class StudentInfoComponent implements OnInit {
     };
     student.approvalStatus = status;
     student.approvalRemarks = remarks;
-    this.studentInfoUpdated.emit(student);
+    this.studentInfoService.approveStudent(student)
+    this.studentUpdated.emit(student); // emit an event
     this.showAlertMessage(`Student with rollNo:${student.rollNo} have been ${student.approvalStatus} successfully!`);
     JsonUtils.download(request)
-    
-    
   }
 
-  showAlertMessage(message: string): void {
+  private showAlertMessage(message: string): void {
     this.alertMessage = message;
     this.showAlert = true;
     setTimeout(() => {
       this.showAlert = false;
     }, 3000); // Hide the alert after 3 seconds
   }
-
-
 
 }

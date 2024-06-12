@@ -81,7 +81,7 @@
                                         @if (key==="PENDING" && !allApproved() ) {
                                         <div>
                                             <div class="container-fluid py-3">
-                                                    <button class="btn btn-primary rounded text-success" (click)="approveAllStudents(nav_data[key].data.notAtRisk)">
+                                                    <button class="btn btn-primary rounded text-success" (click)="approveAll(nav_data[key].data.notAtRisk)">
                                                         <i class="fas fa-thumbs-up me-2"></i>Approve All</button>
                                                
                                             </div>

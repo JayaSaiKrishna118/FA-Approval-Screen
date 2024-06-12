@@ -7,17 +7,17 @@
                 <div class="table-responsive-sm">
                     <table class="table p-2 table-striped table-sm">
                         <tbody>
-                            <tr class="">
-                                <td  class="bg-dark text-white" ><i class="fas fa-user-graduate me-2"></i><span class="text-uppercase ">Student Name</span></td>
-                                <td  class="bg-dark text-white" >{{ studentInfo.name | uppercase }}</td>
+                            <tr class="table-dark">
+                                <td  class=" text-white" ><i class="fas fa-user-graduate me-2"></i><span class="text-uppercase ">Student Name</span></td>
+                                <td  class=" text-white" >{{ studentInfo.name | uppercase }}</td>
                             </tr>
                             <tr>
                                 <td > <i class="fas fa-hashtag me-2"></i><span class="text-uppercase">Roll Number</span></td>
                                 <td >{{ studentInfo.rollNo | uppercase }}</td>
                             </tr>
-                            <tr >
-                                <td  class="bg-dark text-white"><i class="fas fa-chalkboard-teacher me-2"></i><span class="text-uppercase">Program</span></td>
-                                <td  class="bg-dark text-white">{{ studentInfo.program | uppercase }}</td>
+                            <tr class="table-dark" >
+                                <td  class=" text-white"><i class="fas fa-chalkboard-teacher me-2"></i><span class="text-uppercase">Program</span></td>
+                                <td  class=" text-white">{{ studentInfo.program | uppercase }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -122,12 +122,12 @@
                     <strong class="text-dark">Risk Description: </strong><span class="text-warning">{{studentInfo.riskDesc}}</span>
                 </div>
             }
-            @if (studentInfo.approvalStatus == approvalStatus.PENDING) {  
+            
             <form  [formGroup]="approvalForm">
                 <div class="form-group row  border-primary  rounded mb-1 p-3 ">
                     <label for="remarks-student-input" class="col-form-label col-auto fw-bold h5 text-dark">Remarks:</label>
                     <div class="col">
-                        <textarea formControlName="remarks" type="text" name="remarks" id="remarks-student-input" class="form-control bg-light border-0"></textarea>
+                        <textarea [disabled]="studentInfo.approvalStatus !== approvalStatus.PENDING" formControlName="remarks" type="text" name="remarks" id="remarks-student-input" class="form-control bg-light border-0" ></textarea>
                     </div>
                 </div>
                 @if(showAlert){
@@ -135,16 +135,17 @@
                         {{ alertMessage }}
                     </ngb-alert> 
                 }
+                @if (studentInfo.approvalStatus === approvalStatus.PENDING) {  
                
                       <div class="d-flex justify-content-center ">
                         <div class="m-2 align-center " style="width: 175px;"><button type="button" class="btn btn-primary w-100  text-white flex-fill " (click)="saveRequest(studentInfo, approvalStatus.APPROVED, true)"> <i class="fas fa-thumbs-up text-success me-2"></i>Approve</button></div>
                         <div class="m-2  align-center" style="width: 175px;"><button type="button"   class="btn btn-primary btn-outline-danger border-2 shadow-sm w-100  flex-fill  text-white" (click)="saveRequest(studentInfo, approvalStatus.REJECTED)">   <i class="fas fa-thumbs-down me-2 text-danger"></i> Reject</button></div>
                     </div>
              
+        }
               
                   
             </form>
-        }
             
         </div>
     </div>

@@ -1,22 +1,23 @@
-import { Component, OnInit, SimpleChanges, signal } from '@angular/core';
+import { Component, OnInit, SimpleChanges, inject } from '@angular/core';
 import { StudentRiskComponent } from './student-risk/student-risk.component';
 import { StudentSearchComponent } from './student-search/student-search.component';
 import { RouterOutlet } from '@angular/router';
 import { ApprovalStatus, StudentInfo } from '../models';
 import { StudentInfoService } from './services/student-info.service';
 import { HttpClientModule } from '@angular/common/http';
-
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-student-approval',
   standalone: true,
-  imports: [RouterOutlet,HttpClientModule, StudentRiskComponent, StudentSearchComponent, ],
+  imports: [RouterOutlet, HttpClientModule, StudentRiskComponent, StudentSearchComponent],
   providers: [StudentInfoService],
   templateUrl: './student-approval.component.html',
 })
-export class StudentApprovalComponent  implements OnInit{
+export class StudentApprovalComponent implements OnInit {
   studentsInfo: StudentInfo[] = [];
   name!: string;
+  studentApprovalUpdate = new EventEmitter<StudentInfo[]>();
 
   constructor(private studentInfoService: StudentInfoService) {}
 
@@ -25,9 +26,9 @@ export class StudentApprovalComponent  implements OnInit{
   }
 
   getStudentInfo(): void {
-    this.studentInfoService.getStudentsInfo().subscribe({
+    this.studentInfoService.getStudents().subscribe({
       next: (data) => {
-        this.studentsInfo = data.info;
+        this.studentsInfo = data;        
       },
       error: (error) => {
         console.error('Error fetching data:', error);
@@ -35,11 +36,11 @@ export class StudentApprovalComponent  implements OnInit{
     });
   }
 
-  updateStudentList(updatedStudents: StudentInfo[]): void {
-    console.log("UPDATED", updatedStudents)
-    this.studentsInfo = this.studentsInfo.map(student => {
-      const update = updatedStudents.find(u => u.rollNo === student.rollNo);
-      return update ? { ...student, approvalStatus: ApprovalStatus.APPROVED } : student;
-    });
+  approveAllStudents(studentList: StudentInfo[]): void {
+    console.log("list to update", studentList)
+    this.studentInfoService.approveAllStudents(studentList);
+    console.log("Updated...", this.studentsInfo)
+    // this.getStudentInfo();  // Refresh the list after approval
   }
+
 }
