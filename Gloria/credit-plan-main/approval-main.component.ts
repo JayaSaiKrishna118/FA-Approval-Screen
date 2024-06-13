@@ -5,6 +5,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 import {
   NgbAccordionModule,
   NgbAlertModule,
+  NgbNavModule,
   NgbTypeahead,
   NgbTypeaheadModule,
   NgbTypeaheadSelectItemEvent,
@@ -49,7 +50,8 @@ const states = [
     FormsModule,
     JsonPipe,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbNavModule
   ],
   providers:[ServiceService],
 })
@@ -58,6 +60,7 @@ export class ApprovalMainComponent implements OnInit {
   students: StudentInfo[] = [];
   atRisk: StudentInfo[] = [];
   notAtRisk: StudentInfo[] = [];
+  pending: StudentInfo[] = [];
   click$ = new Subject<string>();
   focus$ = new Subject<string>();
   model: string ="" 
@@ -68,6 +71,8 @@ export class ApprovalMainComponent implements OnInit {
   http: any;
   backdrops: number = 0;
   backlogs = new Map<string,number>();
+  active=1;
+  
 
   @ViewChild('instance', { static: true }) instance: NgbTypeahead | undefined;
   newremarks: any;
@@ -78,6 +83,8 @@ export class ApprovalMainComponent implements OnInit {
     this.students = STUDENTS_DATA.infos;
     this.atRisk = this.students.filter((student) => student.atRisk);
     this.notAtRisk = this.students.filter((student) => !student.atRisk);
+    this.pending = this.students.filter((student) => student['pending']);
+    // const h = this.atRisk;
   }
 
   constructor() {
@@ -172,9 +179,10 @@ this.selectedStudent =event.item;
   }
 
 
-  @Input()
+  // @Input()
   
-  @Input() id : string=" "
+  @Input() 
+  id : string=" "
   student! : StudentInfo
    filteredStudents: StudentInfo = {} as StudentInfo
 
@@ -204,6 +212,7 @@ this.selectedStudent =event.item;
     link.click();
     window.URL.revokeObjectURL(url);
     this.notAtRisk = [];
+    alert("Successfully Approved All !")
   }
 
   approve_reject(isapp : boolean){
@@ -212,8 +221,15 @@ this.selectedStudent =event.item;
       "isApproved" : isapp ,
       "remarks" : this.student.approvalRemarks
     };
-    if(isapp) this.student.approvalStatus = ApprovalStatus.APPROVED;
-    else if(!isapp) this.student.approvalStatus = ApprovalStatus.REJECTED;
+    if(isapp) {this.student.approvalStatus = ApprovalStatus.APPROVED;
+    //  const h =false;
+      alert("Approved Successfully !")
+  }
+   
+    else if(!isapp) 
+    {
+      alert("Rejected Successfully !")
+      this.student.approvalStatus = ApprovalStatus.REJECTED;}
     const blob = new Blob([JSON.stringify(student)],{type:'application/json'})
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -221,10 +237,11 @@ this.selectedStudent =event.item;
     link.download = 'output.json';
     link.click();
     window.URL.revokeObjectURL(url);
+    
   }
 
 
-  pending(stud : StudentInfo){
+  Pending(stud : StudentInfo){
     if(stud.approvalStatus==ApprovalStatus.PENDING) return "PENDING";
     else if(stud.approvalStatus==ApprovalStatus.REJECTED) return "REJECTED";
     else return "APPROVED";
