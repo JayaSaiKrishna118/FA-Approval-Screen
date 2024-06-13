@@ -9,11 +9,13 @@
 		<button ngbNavLink>Approved</button>
 		<ng-template ngbNavContent>
 			<ngb-alert [dismissible]="false"  type="success">
-                @for (student of notAtRisk; track student.rollNo) {
+                @for (student of students; track student.rollNo) {
+                    <!-- @if (student.notAtRisk && Pending(student)=="APPROVED"){ -->
                     <div (click)="selectStudent(student)">
                         {{student.rollNo}}
                     </div>
                 }
+            <!-- } -->
 			</ngb-alert>
 		</ng-template>
 	</li>
@@ -21,11 +23,13 @@
 		<button ngbNavLink>Rejected</button>
 		<ng-template ngbNavContent>
 			<ngb-alert [dismissible]="false" type="danger">
-				@for (student of atRisk; track student.rollNo) {
+				@for (student of students; track student.rollNo) {
+                    <!-- @if (student.notAtRisk && Pending(student)=="APPROVED"){ -->
                     <div (click)="selectStudent(student)">
                         {{student.rollNo}}
                     </div>
                 }
+            <!-- } -->
 			</ngb-alert>
 
 			
@@ -64,7 +68,9 @@
                             <div ngbAccordionBody>
                                 <ng-template>
 
-                                    @for (student of atRisk; track student.rollNo) {
+                                    @for (student of students; track student.rollNo) {
+                                        @if (student.atRisk &&
+                                            Pending(student)=="PENDING") {
                                     <ngb-alert [dismissible]="false" type="danger"
                                         style="border-color: rgb(184, 14, 14);">
                                         <strong>
@@ -74,7 +80,7 @@
                                         </strong>
                                     </ngb-alert>
                                     }
-
+                                }
                                 </ng-template>
                             </div>
                         </div>
@@ -103,14 +109,14 @@
                                     </ng-template>
                                     
                                 </div>
-                              
+                                <button (click)="approve_all()" type="button" class="btn btn-primary" style="margin-left: 140px;">Approve All</button>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-            <button (click)="approve_all()" type="button" class="btn btn-primary">Approve All</button>
+          
         </div>
           
     </div>
@@ -220,7 +226,6 @@
             </div>
             <div class="col-md-6">
                 <button class="btn btn-danger btn-block" (click)="approve_reject(false)" >&nbsp; Reject &nbsp; </button>
-                
             </div>
             
         </div>
