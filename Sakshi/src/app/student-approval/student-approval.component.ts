@@ -81,6 +81,13 @@ export class StudentApprovalComponent implements AfterViewInit {
     }
   }
 
+  searchclick(event : any,str: string){
+    if(str == "") return;
+    this.student = this.students.filter((item) => {
+      return (item.rollNo==str.split(' ')[0]);
+      })[0];
+    this.selectstudent = true;
+  }
 
   selectRollNo(event: { target: { value: any; }; }, type: string){
     const rollNo = event.target.value;

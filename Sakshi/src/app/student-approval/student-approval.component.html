@@ -2,8 +2,7 @@
   <div class="col-md-3">
     <div class="card" style="min-height: 400px">
       <div class="card-body">
-       
-         <!-- <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <!-- <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
           <li [ngbNavItem]="1">
       
             <button ngbNavLink>Approved</button>
@@ -25,7 +24,7 @@
           </li>
         </ul> 
          -->
-<!-- 
+        <!-- 
         <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
         <pre>Active: {{ active }}</pre> -->
@@ -39,15 +38,14 @@
             </h2>
 
             <div ngbAccordionCollapse>
-              <div ngbAccordionBody>
-                <ng-template>
-                  @for (student of atRisk; track student.rollNo) {
-                  <ul class="list-group">
-                    <li class="list-group-item">{{ student.rollNo }}</li>
-                  </ul>
-                  }
-                </ng-template>
-              </div>
+              @for (student of atRisk; track student.rollNo) {
+              <button
+                class="m-2 btn btn-outline-dark"
+                (click)="searchclick($event, student.rollNo)"
+              >
+                {{ student.rollNo }}
+              </button>
+              }
             </div>
           </div>
 
@@ -58,24 +56,21 @@
               </button>
             </h2>
             <div ngbAccordionCollapse>
-              <div ngbAccordionBody>
-                <ng-template>
-                  @for (student of notAtRisk; track student.rollNo) {
-
-                  <ul class="list-group">
-                    <li class="list-group-item">{{ student.rollNo }}</li>
-                  </ul>
-                  }
-                </ng-template>
-
-                <button
-                  class="btn btn-primary"
-                  id="approveAll"
-                  (click)="approveAll()"
-                >
-                  Approve All
-                </button>
-              </div>
+              @for (student of notAtRisk; track student.rollNo) {
+              <button
+                class="m-2 btn btn-outline-dark"
+                (click)="searchclick($event, student.rollNo)"
+              >
+                {{ student.rollNo }}
+              </button>
+              }
+              <button
+                class="btn btn-primary"
+                id="approveAll"
+                (click)="approveAll()"
+              >
+                Approve All
+              </button>
             </div>
           </div>
         </div>
@@ -136,7 +131,7 @@
                             <th>Name</th>
                             <td>{{ filteredStudent.name }}</td>
                           </tr>
-                          
+
                           <tr>
                             <th>Roll No.</th>
                             <td>{{ filteredStudent.rollNo }}</td>
@@ -212,9 +207,12 @@
 
                     <tr>
                       <td>
-                       
                         <h5>Remarks</h5>
-                        <input type="text" class="remarks col-9 rounded-2" placeholder="remarks">
+                        <input
+                          type="text"
+                          class="remarks col-9 rounded-2"
+                          placeholder="remarks"
+                        />
                       </td>
                     </tr>
                   </tbody>

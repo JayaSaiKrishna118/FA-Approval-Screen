@@ -6,7 +6,7 @@ export const STUDENTS_DATA = {
         name: 'Sohan',
         program: "Master's in CS",
         atRisk: false,
-        riskDecs: 'Not at Risk',
+        riskDecs: 'Good going',
         coreCourses: [
           {
             code: '24CS121',
@@ -41,7 +41,7 @@ export const STUDENTS_DATA = {
         name: 'Monalisa',
         program: "Master's in Electronics",
         atRisk: false,
-        riskDecs: 'Not at Risk',
+        riskDecs: 'Good going',
         coreCourses: [
           { code: '24EE201', name: 'Data Science', credits: 3, slot: 'A2' },
           { code: '24EE202', name: 'Mechanical', credits: 3, slot: 'B2' },
@@ -66,7 +66,7 @@ export const STUDENTS_DATA = {
         name: 'Mohan',
         program: "Bachleor's in CS",
         atRisk: true,
-        riskDecs: 'At Risk',
+        riskDecs: 'Not Sufficient Marks in core subjects',
         coreCourses: [
           {
             code: '24CE201',
@@ -96,7 +96,7 @@ export const STUDENTS_DATA = {
         name: 'Ananya',
         program: "Master's in Data Analytics",
         atRisk: true,
-        riskDecs: 'At Risk',
+        riskDecs: 'Deferred Core courses from the template',
         coreCourses: [
           {
             code: '24CE201',
@@ -126,7 +126,7 @@ export const STUDENTS_DATA = {
         name: 'Shanaya',
         program: "Bachelor's in IT",
         atRisk: false,
-        riskDecs: 'Not at Risk',
+        riskDecs: 'Good going',
         coreCourses: [
           {
             code: '24CE201',
@@ -156,7 +156,7 @@ export const STUDENTS_DATA = {
         name: 'Sohan',
         program: "Master's in CS",
         atRisk: false,
-        riskDecs: 'Not at Risk',
+        riskDecs: 'Good going',
         coreCourses: [
           {
             code: '24CS121',
@@ -183,7 +183,7 @@ export const STUDENTS_DATA = {
           { code: '24EC202', min: 0, max: 4 },
           { code: '24EC203', min: 0, max: 5 },
         ],
-        approvalStatus: ApprovalStatus.APPROVED,
+        approvalStatus: ApprovalStatus.PENDING,
         approvalRemarks: 'good going',
       },
       {
@@ -191,7 +191,7 @@ export const STUDENTS_DATA = {
         name: 'Monal',
         program: "Master's in Electronics",
         atRisk: false,
-        riskDecs: 'Not at Risk',
+        riskDecs: 'Good going',
         coreCourses: [
           { code: '24EE201', name: 'Data Science', credits: 3, slot: 'B2' },
           { code: '24EE202', name: 'Mechanical', credits: 3, slot: 'A2' },
@@ -216,7 +216,7 @@ export const STUDENTS_DATA = {
         name: 'Mohan',
         program: "Bachleor's in CS",
         atRisk: true,
-        riskDecs: 'At Risk',
+        riskDecs: 'Insufficient Credits in some major subjects',
         coreCourses: [
           {
             code: '24CE201',
@@ -246,7 +246,7 @@ export const STUDENTS_DATA = {
         name: 'Anika',
         program: "Master's in Data Analytics",
         atRisk: true,
-        riskDecs: 'At Risk',
+        riskDecs: 'Insufficient Credits in some major subjects',
         coreCourses: [
           {
             code: '24CE201',
@@ -276,7 +276,7 @@ export const STUDENTS_DATA = {
         name: 'Shantanu',
         program: "Bachelor's in IT",
         atRisk: false,
-        riskDecs: 'Not at Risk',
+        riskDecs: 'Good going',
         coreCourses: [
           {
             code: '24CE201',
