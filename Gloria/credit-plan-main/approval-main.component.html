@@ -2,6 +2,59 @@
     <div class="col-md-3">
         <div class="card" style="height: 550px;">
             <div class="card-body bg-light">
+
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" [destroyOnHide]="false" class="nav-tabs">
+	<li [ngbNavItem]="1" [destroyOnHide]="true">
+		<button ngbNavLink>Approved</button>
+		<ng-template ngbNavContent>
+			<ngb-alert [dismissible]="false"  type="success">
+                @for (student of notAtRisk; track student.rollNo) {
+                    <div (click)="selectStudent(student)">
+                        {{student.rollNo}}
+                    </div>
+                }
+			</ngb-alert>
+		</ng-template>
+	</li>
+	<li [ngbNavItem]="2">
+		<button ngbNavLink>Rejected</button>
+		<ng-template ngbNavContent>
+			<ngb-alert [dismissible]="false" type="danger">
+				@for (student of atRisk; track student.rollNo) {
+                    <div (click)="selectStudent(student)">
+                        {{student.rollNo}}
+                    </div>
+                }
+			</ngb-alert>
+
+			
+		</ng-template>
+	</li>
+	<li [ngbNavItem]="3">
+		<button ngbNavLink>Pending</button>
+		<ng-template ngbNavContent let-active>
+			<!-- @if (active) { -->
+				<ngb-alert [dismissible]="false" >
+					@for (student of pending; track student.rollNo) {
+                        <div (click)="selectStudent(student)">
+                            {{student.rollNo}}
+                        </div>
+                    }
+				</ngb-alert>
+			<!-- } -->
+
+			
+		</ng-template>
+	</li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+
+
+
+
                 <div ngbAccordion>
                     <div ngbAccordionItem [collapsed]="true">
                         <h2 ngbAccordionHeader>
@@ -167,10 +220,14 @@
             </div>
             <div class="col-md-6">
                 <button class="btn btn-danger btn-block" (click)="approve_reject(false)" >&nbsp; Reject &nbsp; </button>
+                
             </div>
             
         </div>
     </div>
+
+
+
     <router-outlet></router-outlet>
     
     </div>
