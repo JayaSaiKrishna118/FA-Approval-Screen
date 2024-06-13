@@ -10,12 +10,12 @@
 		<ng-template ngbNavContent>
 			<ngb-alert [dismissible]="false"  type="success">
                 @for (student of students; track student.rollNo) {
-                    <!-- @if (student.notAtRisk && Pending(student)=="APPROVED"){ -->
-                    <div (click)="selectStudent(student)">
+                    @if (student.notAtRisk && Pending(student)=="APPROVED"){
+                    <div (click)="onselect(student)">
                         {{student.rollNo}}
                     </div>
                 }
-            <!-- } -->
+            }
 			</ngb-alert>
 		</ng-template>
 	</li>
@@ -41,7 +41,7 @@
 			<!-- @if (active) { -->
 				<ngb-alert [dismissible]="false" >
 					@for (student of pending; track student.rollNo) {
-                        <div (click)="selectStudent(student)">
+                        <div (click)="onselect(student)">
                             {{student.rollNo}}
                         </div>
                     }
@@ -74,7 +74,7 @@
                                     <ngb-alert [dismissible]="false" type="danger"
                                         style="border-color: rgb(184, 14, 14);">
                                         <strong>
-                                            <div (click)="selectStudent(student)">
+                                            <div (click)="onselect(student)">
                                                 {{student.rollNo}}
                                             </div>
                                         </strong>
@@ -99,7 +99,7 @@
                                         <ngb-alert [dismissible]="false" type="success"
                                             style="border-color: rgb(13, 131, 13);">
                                             <strong>
-                                                <div (click)="selectStudent(student)">
+                                                <div (click)="onselect(student)">
                                                     {{student.rollNo}}
                                                 </div>
                                             </strong>
@@ -128,7 +128,7 @@
                         <input id="typeahead-focus" type="text" class="form-control" placeholder="Search Student"
                             [(ngModel)]="model" [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)"
                             (click)="click$.next($any($event).target.value)"
-                           #instance="ngbTypeahead" (keyup.enter)="onselect()"
+                           #instance="ngbTypeahead" (keyup.enter)="onselect(student)"
                          
                            />
                         <hr />
