@@ -191,6 +191,7 @@ this.selectedStudent =event.item;
   }
 
   approve_all(){
+    // if(!this.selectedStudent?.atRisk)
     var students: ApprovalRequest[] = [];
     for(let stud of this.notAtRisk){
       let student :ApprovalRequest = {
@@ -216,6 +217,8 @@ this.selectedStudent =event.item;
   }
 
   approve_reject(isapp : boolean){
+
+    // if(this.selectedStudent?.approvalStatus= ApprovalStatus.REJECTED)
     let student :ApprovalRequest = {
       "rollNo" : this.student.rollNo,
       "isApproved" : isapp ,
@@ -223,6 +226,7 @@ this.selectedStudent =event.item;
     };
     if(isapp) {this.student.approvalStatus = ApprovalStatus.APPROVED;
     //  const h =false;
+    console.log(this.student);
       alert("Approved Successfully !")
   }
    
@@ -238,12 +242,13 @@ this.selectedStudent =event.item;
     link.click();
     window.URL.revokeObjectURL(url);
     
+    
   }
 
 
-  Pending(stud : StudentInfo){
-    if(stud.approvalStatus==ApprovalStatus.PENDING) return "PENDING";
-    else if(stud.approvalStatus==ApprovalStatus.REJECTED) return "REJECTED";
+  Pending(student : StudentInfo){
+    if(student.approvalStatus==ApprovalStatus.PENDING) return "PENDING";
+    else if(student.approvalStatus==ApprovalStatus.REJECTED) return "REJECTED";
     else return "APPROVED";
   }
 
@@ -253,5 +258,7 @@ this.selectedStudent =event.item;
       if(cour.credits_acquired<cour.total_credits) this.backdrops++;
     }
   }
+
+  
 
 }
