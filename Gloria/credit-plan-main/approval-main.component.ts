@@ -103,11 +103,12 @@ export class ApprovalMainComponent implements OnInit {
         this.backlogs.set(s.rollNo,this.backdrops);
       }
   }
-onselect(){
+onselect(student : StudentInfo){
  
   console.log(this.model)
 
   this.student = this.students.filter((term)=>{
+    
     return term.rollNo== this.model.split(" ")[1]
     console.log(this.model.split(" ")[1] , term.rollNo);
   })[0];
