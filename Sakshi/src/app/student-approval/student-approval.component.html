@@ -2,32 +2,37 @@
   <div class="col-md-3">
     <div class="card" style="min-height: 400px">
       <div class="card-body">
-        <!-- <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-          <li [ngbNavItem]="1">
+        <!-- <div class="nav">
+          <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+            <li [ngbNavItem]="1">
+              <button ngbNavLink>Approved</button>
+              <ng-template ngbNavContent>
+                @if(student.approvalStatus==ApprovalStatus.APPROVED){
+                <p>{{ student.rollNo }}</p>}
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+              <button ngbNavLink>Rejected</button>
+              <ng-template ngbNavContent>
+                @if(student.approvalStatus==ApprovalStatus.REJECTED){
+                <p>{{student.rollNo}}</p>}
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="3">
+              <button ngbNavLink>Pending</button>
+              <ng-template ngbNavContent>
+                @if(student.approvalStatus==ApprovalStatus.PENDING){
+                <p>{{student.rollNo}}</p>}
+              </ng-template>
+            </li>
+        
+          </ul> 
+          <div [ngbNavOutlet]="nav" class="mt-2"></div>
+        </div> -->
+        
       
-            <button ngbNavLink>Approved</button>
-            <ng-template ngbNavContent>
-              <p>{{ student.rollNo }}</p>
-            </ng-template>
-          </li>
-          <li [ngbNavItem]="2">
-            <button ngbNavLink>Rejected</button>
-            <ng-template ngbNavContent>
-              <p></p>
-            </ng-template>
-          </li>
-          <li [ngbNavItem]="3">
-            <button ngbNavLink>Pending</button>
-            <ng-template ngbNavContent>
-              <p></p>
-            </ng-template>
-          </li>
-        </ul> 
-         -->
-        <!-- 
-        <div [ngbNavOutlet]="nav" class="mt-2"></div>
-
-        <pre>Active: {{ active }}</pre> -->
+      
+     
 
         <div ngbAccordion>
           <div ngbAccordionItem>
@@ -38,15 +43,17 @@
             </h2>
 
             <div ngbAccordionCollapse>
-              <div class="list-item">
-                @for (student of atRisk; track student.rollNo) {
-                <button
-                  class="m-2 btn btn-outline-dark"
-                  (click)="searchclick($event, student.rollNo)"
-                >
-                  {{ student.rollNo }}
-                </button>
-                }
+              <div class="list">
+                <div class="list-item">
+                  @for (student of atRisk; track student.rollNo) {
+                  <button
+                    class="m-2 btn btn-outline-dark d-flex"
+                    (click)="searchclick($event, student.rollNo)"
+                  >
+                    {{ student.rollNo }}
+                  </button>
+                  }
+                </div>
               </div>
             </div>
           </div>
@@ -60,7 +67,7 @@
             <div ngbAccordionCollapse>
               @for (student of notAtRisk; track student.rollNo) {
               <button
-                class="m-2 btn btn-outline-dark"
+                class="m-2 btn btn-outline-dark d-flex"
                 (click)="searchclick($event, student.rollNo)"
               >
                 {{ student.rollNo }}
@@ -93,16 +100,18 @@
             [inputFormatter]="formatter"
             [ngbTypeahead]="search"
             (focus)="focus$.next($any($event).target.value)"
+            (click)="click$.next($any($event).target.value)"
             #instance="ngbTypeahead"
             (keyup.enter)="onselect()"
+
           />
 
           <!--DISPLAY SEARCH RESULTS-->
           <ng-template #rt let-r="result" let-t="term">
             <div
-              class="d-flex flex-wrap justify-content-between align-items-center border-bottom"
+              class="d-flex flex-wrap justify-content-between align-items-center"
               style="cursor: pointer"
-              [routerLink]="['/student-approval', r.rollNo]"
+              [routerLink]="[r.rollNo]"
             >
               <div class="col-auto">
                 <span class="text-decoration-none mx-2">{{ r.rollNo }}</span>
@@ -118,7 +127,7 @@
           <div class="card shadow-sm">
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-sm table-striped">
+                <table class="table table-sm table-striped justify-content-between align-items-center">
                   <thead>
                     <tr>
                       <th>Student Details</th>
