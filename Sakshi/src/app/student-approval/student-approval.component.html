@@ -1,13 +1,43 @@
 <div class="row">
   <div class="col-md-3">
-    <div class="card" style="min-height: 400px;">
+    <div class="card" style="min-height: 400px">
       <div class="card-body">
+       
+         <!-- <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+          <li [ngbNavItem]="1">
+      
+            <button ngbNavLink>Approved</button>
+            <ng-template ngbNavContent>
+              <p>{{ student.rollNo }}</p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <button ngbNavLink>Rejected</button>
+            <ng-template ngbNavContent>
+              <p></p>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <button ngbNavLink>Pending</button>
+            <ng-template ngbNavContent>
+              <p></p>
+            </ng-template>
+          </li>
+        </ul> 
+         -->
+<!-- 
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+        <pre>Active: {{ active }}</pre> -->
+
         <div ngbAccordion>
-          <div ngbAccordionItem class="my-3">
+          <div ngbAccordionItem>
             <h2 ngbAccordionHeader>
-              <button ngbAccordionButton class="bg-primary text-white"> <i class="fa fa-thumbs-down"></i>&nbsp; &nbsp; At Risk</button>
+              <button ngbAccordionButton class="bg-primary text-white">
+                <i class="fa fa-thumbs-down"></i> &nbsp; &nbsp;AtRisk
+              </button>
             </h2>
-           
+
             <div ngbAccordionCollapse>
               <div ngbAccordionBody>
                 <ng-template>
@@ -23,20 +53,26 @@
 
           <div ngbAccordionItem>
             <h2 ngbAccordionHeader>
-              <button ngbAccordionButton class="bg-primary text-white "><i class="fa fa-thumbs-up"></i>&nbsp; &nbsp;Not At Risk</button>
+              <button ngbAccordionButton class="bg-primary text-white">
+                <i class="fa fa-thumbs-up"></i>&nbsp; &nbsp;Not At Risk
+              </button>
             </h2>
             <div ngbAccordionCollapse>
               <div ngbAccordionBody>
                 <ng-template>
                   @for (student of notAtRisk; track student.rollNo) {
-                    
+
                   <ul class="list-group">
                     <li class="list-group-item">{{ student.rollNo }}</li>
                   </ul>
                   }
                 </ng-template>
 
-                <button class="btn btn-primary" id="approveAll" (click)="approveAll()">
+                <button
+                  class="btn btn-primary"
+                  id="approveAll"
+                  (click)="approveAll()"
+                >
                   Approve All
                 </button>
               </div>
@@ -47,32 +83,32 @@
     </div>
   </div>
   <div class="col-md-9">
-    <div class="card" style="min-height: 400px;">
+    <div class="card" style="min-height: 400px">
       <div class="card-body">
-        <div class="container-fluid">
-         
+        <div class="container-fluid col-6">
           <input
             id="typeahead-focus"
-            type="text" placeholder="Search..."
-            class="form-control "
-            [(ngModel)]="model" [resultTemplate]="rt" [inputFormatter] = "formatter"
+            type="text"
+            placeholder="Search Student"
+            class="form-control"
+            [(ngModel)]="model"
+            [resultTemplate]="rt"
+            [inputFormatter]="formatter"
             [ngbTypeahead]="search"
             (focus)="focus$.next($any($event).target.value)"
-            (click)="click$.next($any($event).target.value)"
             #instance="ngbTypeahead"
+            (keyup.enter)="onselect()"
           />
 
           <!--DISPLAY SEARCH RESULTS-->
           <ng-template #rt let-r="result" let-t="term">
             <div
-              class="d-flex flex-wrap justify-content-between align-items-center border-bottom py-2 w-100 min-height"
+              class="d-flex flex-wrap justify-content-between align-items-center border-bottom"
               style="cursor: pointer"
               [routerLink]="['/student-approval', r.rollNo]"
             >
               <div class="col-auto">
-                <span class="text-decoration-none mx-2">{{
-                  r.rollNo
-                }}</span>
+                <span class="text-decoration-none mx-2">{{ r.rollNo }}</span>
               </div>
               <div class="col">
                 <span class="d-block">{{ r.name }}</span>
@@ -82,113 +118,234 @@
         </div>
         <div class="container-fluid">
           @if(filteredStudent.rollNo){
-            <div class="card shadow-sm">
-              <div class="card-body">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Student Details</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>
+                        <table class="table table-sm table-bordered">
+                          <tr>
+                            <th>Name</th>
+                            <td>{{ filteredStudent.name }}</td>
+                          </tr>
+                          
+                          <tr>
+                            <th>Roll No.</th>
+                            <td>{{ filteredStudent.rollNo }}</td>
+                          </tr>
+
+                          <tr>
+                            <th>Program</th>
+                            <td>{{ filteredStudent.program }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <h5>Core Courses</h5>
+
+                        <table class="table table-sm table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Code</th>
+
+                              <th>Name</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            @for (course of filteredStudent.coreCourses; track
+                            course.code) {
+                            <tr>
+                              <td>{{ course.code }}</td>
+                              <td>{{ course.name }}</td>
+                            </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <h5>Elective Credits</h5>
+
+                        <table class="table table-sm table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Code</th>
+                              <th>Min</th>
+                              <th>Max</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            @for (elective of filteredStudent.electiveCredits;
+                            track elective.code) {
+                            <tr>
+                              <td>{{ elective.code }}</td>
+                              <td>{{ elective.min }}</td>
+                              <td>{{ elective.max }}</td>
+                            </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <h5>Description</h5>
+                        <p>{{ filteredStudent.riskDecs }}</p>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                       
+                        <h5>Remarks</h5>
+                        <input type="text" class="remarks col-9 rounded-2" placeholder="remarks">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- <div>
                 <div>
-                  <div>
-                    Rollno: <span>{{ filteredStudent.rollNo }}</span>
+                  Rollno: <span>{{ filteredStudent.rollNo }}</span>
+                </div>
+                <div>
+                  Name: <span>{{ filteredStudent.name }}</span>
+                </div>
+                <div>
+                  Program: <span>{{ filteredStudent.program }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <div class="row">
+                <div class="card-body col-md-6">
+                  <div ngbAccordion>
+                    <div ngbAccordionItem>
+                      <h2 ngbAccordionHeader>
+                        <button
+                          ngbAccordionButton
+                          class="bg-primary text-white"
+                        >
+                          Core Courses
+                        </button>
+                      </h2>
+                      <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                          <ng-template>
+                            <table class="table table-sm table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Code</th>
+                                  <th>Name</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                @for (course of filteredStudent.coreCourses;
+                                track course.code) {
+                                <tr>
+                                  <td>{{ course.code }}</td>
+                                  <td>{{ course.name }}</td>
+                                </tr>
+                                }
+                              </tbody>
+                            </table>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    Name: <span>{{ filteredStudent.name }}</span>
+                </div>
+                <div class="card-body col-md-6">
+                  <div ngbAccordion>
+                    <div ngbAccordionItem>
+                      <h2 ngbAccordionHeader>
+                        <button
+                          ngbAccordionButton
+                          class="bg-primary text-white"
+                        >
+                          Elective Credits
+                        </button>
+                      </h2>
+                      <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                          <ng-template>
+                            <table class="table table-sm table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Code</th>
+                                  <th>Min</th>
+                                  <th>Max</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                @for (elective of
+                                filteredStudent.electiveCredits; track
+                                elective.code) {
+                                <tr>
+                                  <td>{{ elective.code }}</td>
+                                  <td>{{ elective.min }}</td>
+                                  <td>{{ elective.max }}</td>
+                                </tr>
+                                }
+                              </tbody>
+                            </table>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    Program: <span>{{ filteredStudent.program }}</span>
+                </div>
+              </div> -->
+
+              <div class="card-body">
+                <div class="mt-1">
+                  <div class="row">
+                    <div class="col-md-6 d-flex gap-5 align-items-center">
+                      @if(filteredStudent.approvalStatus ==
+                      ApprovalStatus.PENDING){
+                      <button
+                        class="btn btn-success"
+                        (click)="approveStudent()"
+                      >
+                        Approve
+                      </button>
+                      <button class="btn btn-danger" (click)="rejectStudent()">
+                        Reject
+                      </button>
+                      } @if(filteredStudent.approvalStatus ==
+                      ApprovalStatus.APPROVED){
+                      <button
+                        class="btn btn-primary"
+                        (click)="approvedStudent()"
+                      >
+                        Approved
+                      </button>
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
-            
-              <div class="mt-3">
-                <div class="row">
-                  <div class="card-body col-md-6">
-                    <div ngbAccordion>
-                      <div ngbAccordionItem>
-                        <h2 ngbAccordionHeader>
-                          <button ngbAccordionButton>Core Courses</button>
-                        </h2>
-                        <div ngbAccordionCollapse>
-                          <div ngbAccordionBody>
-                            <ng-template>
-                              <table class="table table-sm table-striped">
-                                <thead>
-                                  <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  @for (course of filteredStudent.coreCourses; track
-                                  course.code) {
-            
-                                  <tr>
-                                    <td>{{ course.code }}</td>
-                                    <td>{{ course.name }}</td>
-                                  </tr>
-                                  }
-                                </tbody>
-                              </table>
-                            </ng-template>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-body col-md-6">
-                    <div ngbAccordion>
-                      <div ngbAccordionItem>
-                        <h2 ngbAccordionHeader>
-                          <button ngbAccordionButton>Elective Credits</button>
-                        </h2>
-                        <div ngbAccordionCollapse>
-                          <div ngbAccordionBody>
-                            <ng-template>
-                              <table class="table table-sm table-striped">
-                                <thead>
-                                  <tr>
-                                    <th>Code</th>
-                                    <th>Min</th>
-                                    <th>Max</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  @for (elective of filteredStudent.electiveCredits; track
-                                  elective.code) {
-                                  <tr>
-                                    <td>{{ elective.code }}</td>
-                                    <td>{{ elective.min }}</td>
-                                    <td>{{ elective.max }}</td>
-                                  </tr>
-                                  }
-                                </tbody>
-                              </table>
-                            </ng-template>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            
-                <div class="card-body">
-                  <h5>Risk Description: </h5>
-                 <span>&nbsp;{{ filteredStudent.riskDecs }}</span>
-                </div>
-                
-                <div class="card-body">
-                  <div class="mt-1">
-                    <div class="row">
-                      <div class="col-md-6 d-flex gap-5 align-items-center">
-                        @if(filteredStudent?.approvalStatus == ApprovalStatus.PENDING){
-                        <button class="btn btn-success" (click)="approveStudent()">Approve</button>
-                        <button class="btn btn-danger" (click)="rejectStudent()">Reject</button>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                </div>
             </div>
-      
+          </div>
+          }
         </div>
-      }
       </div>
     </div>
   </div>
