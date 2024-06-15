@@ -1,0 +1,40 @@
+<div class="d-md-flex">
+    <div class="p-2 flex-shrink-1">
+        <div class="card">
+            <div class="card-body">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs flex-nowrap"
+                (click)="navChange()">
+                    @for (status of getDecision(); track $index) {
+                    <li [ngbNavItem]="$index" class="flex-nowrap">
+                        <button ngbNavLink>{{status.charAt(0) + status.slice(1).toLowerCase() }}</button>
+                        <ng-template ngbNavContent>
+                            <app-creditplans [creditPlans]="creditPlans" [atRisk]="true"
+                                [decisionStatus]="toDecisionStatusObj(status)"></app-creditplans>
+                            <div class="pt-2"></div>
+                            <app-creditplans [creditPlans]="creditPlans" [atRisk]="false"
+                                [decisionStatus]="toDecisionStatusObj(status)"></app-creditplans>
+                        </ng-template>
+                    </li>
+                    }
+                </ul>
+
+                <div [ngbNavOutlet]="nav" class="mt-2"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="p-2 flex-grow-1">
+        <div class="card">
+            <h5 class="card-header">
+                <input id="typeahead-basic" type="text" #input placeholder="Search credit plan by student name" class="form-control"
+                    [(ngModel)]="model" [ngbTypeahead]="search" [resultFormatter]="formatter"  [inputFormatter]="formatter"
+                    [editable]="false" (selectItem)="onSelect($event)"
+                    />
+            </h5>
+            <div class="card-body">
+                <app-displaycreditplan></app-displaycreditplan>
+            </div>
+        </div>
+    </div>
+</div>
