@@ -2,37 +2,34 @@
   <div class="col-md-3">
     <div class="card" style="min-height: 400px">
       <div class="card-body">
-        <!-- <div class="nav">
-          <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
-            <li [ngbNavItem]="1">
-              <button ngbNavLink>Approved</button>
-              <ng-template ngbNavContent>
-                @if(student.approvalStatus==ApprovalStatus.APPROVED){
-                <p>{{ student.rollNo }}</p>}
-              </ng-template>
-            </li>
-            <li [ngbNavItem]="2">
-              <button ngbNavLink>Rejected</button>
-              <ng-template ngbNavContent>
-                @if(student.approvalStatus==ApprovalStatus.REJECTED){
-                <p>{{student.rollNo}}</p>}
-              </ng-template>
-            </li>
-            <li [ngbNavItem]="3">
-              <button ngbNavLink>Pending</button>
-              <ng-template ngbNavContent>
-                @if(student.approvalStatus==ApprovalStatus.PENDING){
-                <p>{{student.rollNo}}</p>}
-              </ng-template>
-            </li>
         
-          </ul> 
-          <div [ngbNavOutlet]="nav" class="mt-2"></div>
-        </div> -->
-        
-      
-      
-     
+        <nav ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+          <li [ngbNavItem]="1">
+            <button ngbNavLink>Approved</button>
+            <ng-template ngbNavContent>
+              <ul>
+                <li *ngFor="let student of approvedStudents" class="border-bottom p-2">{{ student.rollNo }}</li>
+              </ul>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="2">
+            <button ngbNavLink>Rejected</button>
+            <ng-template ngbNavContent>
+              <ul>
+                <li *ngFor="let student of rejectedStudents" class="border-bottom p-2">{{ student.rollNo }}</li>
+              </ul>
+            </ng-template>
+          </li>
+          <li [ngbNavItem]="3">
+            <button ngbNavLink>Pending</button>
+            <ng-template ngbNavContent>
+              <ul>
+                <li *ngFor="let student of pendingStudents" class="border-bottom p-2">{{ student.rollNo }}</li>
+              </ul>
+            </ng-template>
+          </li>
+        </nav>
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
         <div ngbAccordion>
           <div ngbAccordionItem>
@@ -46,12 +43,12 @@
               <div class="list">
                 <div class="list-item">
                   @for (student of atRisk; track student.rollNo) {
-                  <button
-                    class="m-2 btn btn-outline-dark d-flex"
-                    (click)="searchclick($event, student.rollNo)"
+                  <div
+                    class="m-2 btn btn-outline-primary text-black d-flex"
+                    (click)="selectStudentByRollNo(student.rollNo)"
                   >
                     {{ student.rollNo }}
-                  </button>
+                  </div>
                   }
                 </div>
               </div>
@@ -66,19 +63,20 @@
             </h2>
             <div ngbAccordionCollapse>
               @for (student of notAtRisk; track student.rollNo) {
-              <button
-                class="m-2 btn btn-outline-dark d-flex"
-                (click)="searchclick($event, student.rollNo)"
+              <div
+                class="m-2 btn btn-outline-primary text-black d-flex"
+
+                  (mouseenter)="onMouseEnter(student.rollNo)"
+                    (mouseleave)="onMouseLeave()"
+                    (click)="selectStudentByRollNo(student.rollNo)"
+
               >
                 {{ student.rollNo }}
-              </button>
+              </div>
               }
-              <button
-                class="btn btn-primary"
-                id="approveAll"
-                (click)="approveAll()"
-              >
-                Approve All
+              <button  (click)="approveAll()" type="button"
+                class="btn btn-primary" style="margin-left: 140px;">
+               Approve All
               </button>
             </div>
           </div>
@@ -89,7 +87,7 @@
   <div class="col-md-9">
     <div class="card" style="min-height: 400px">
       <div class="card-body">
-        <div class="container-fluid col-6">
+        <div class="container col-3"  style="margin-right: 1500px;">
           <input
             id="typeahead-focus"
             type="text"
@@ -109,7 +107,7 @@
           <!--DISPLAY SEARCH RESULTS-->
           <ng-template #rt let-r="result" let-t="term">
             <div
-              class="d-flex flex-wrap justify-content-between align-items-center"
+              class="d-flex text-black"
               style="cursor: pointer"
               [routerLink]="[r.rollNo]"
             >
@@ -127,10 +125,10 @@
           <div class="card shadow-sm">
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-sm table-striped justify-content-between align-items-center">
+                <table class="table table-sm table-striped">
                   <thead>
-                    <tr>
-                      <th>Student Details</th>
+                    <tr class="text-center align-content">
+                      <th><h1>Student Details</h1></th>
                     </tr>
                   </thead>
 
@@ -138,17 +136,17 @@
                     <tr>
                       <td>
                         <table class="table table-sm table-bordered">
-                          <tr>
+                          <tr class="text-center align-content-md-center">
                             <th>Name</th>
                             <td>{{ filteredStudent.name }}</td>
                           </tr>
 
-                          <tr>
+                          <tr class="text-center align-content-lg-center">
                             <th>Roll No.</th>
                             <td>{{ filteredStudent.rollNo }}</td>
                           </tr>
 
-                          <tr>
+                          <tr class="text-center align-content-lg-center">
                             <th>Program</th>
                             <td>{{ filteredStudent.program }}</td>
                           </tr>
@@ -158,13 +156,12 @@
 
                     <tr>
                       <td>
-                        <h5>Core Courses</h5>
+                        <h4>Core Courses</h4>
 
-                        <table class="table table-sm table-bordered">
+                        <table class="table table-sm table-bordered gap-5">
                           <thead>
-                            <tr>
+                            <tr class="text-center align-content">
                               <th>Code</th>
-
                               <th>Name</th>
                             </tr>
                           </thead>
@@ -172,7 +169,7 @@
                           <tbody>
                             @for (course of filteredStudent.coreCourses; track
                             course.code) {
-                            <tr>
+                            <tr class="text-center align-content">
                               <td>{{ course.code }}</td>
                               <td>{{ course.name }}</td>
                             </tr>
@@ -184,11 +181,11 @@
 
                     <tr>
                       <td>
-                        <h5>Elective Credits</h5>
+                        <h4>Elective Credits</h4>
 
                         <table class="table table-sm table-bordered">
                           <thead>
-                            <tr>
+                            <tr class="text-center align-content">
                               <th>Code</th>
                               <th>Min</th>
                               <th>Max</th>
@@ -198,7 +195,7 @@
                           <tbody>
                             @for (elective of filteredStudent.electiveCredits;
                             track elective.code) {
-                            <tr>
+                            <tr class="text-center align-content">
                               <td>{{ elective.code }}</td>
                               <td>{{ elective.min }}</td>
                               <td>{{ elective.max }}</td>
@@ -338,7 +335,8 @@
                       <button class="btn btn-danger" (click)="rejectStudent()">
                         Reject
                       </button>
-                      } @if(filteredStudent.approvalStatus ==
+                      }
+                      <!-- @if(filteredStudent.approvalStatus ==
                       ApprovalStatus.APPROVED){
                       <button
                         class="btn btn-primary"
@@ -346,7 +344,7 @@
                       >
                         Approved
                       </button>
-                      }
+                      } -->
                     </div>
                   </div>
                 </div>

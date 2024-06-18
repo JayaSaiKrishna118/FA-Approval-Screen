@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import {
   NgbAccordionModule,
   NgbNavModule,
@@ -18,7 +18,7 @@ import {
   merge,
   map,
 } from 'rxjs';
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { STUDENTS_DATA } from '../student-info-data';
 
@@ -33,12 +33,14 @@ import { STUDENTS_DATA } from '../student-info-data';
     FormsModule,
     NgbNavModule,
     NgbTypeahead,
+    NgFor,
+    NgIf,
     JsonPipe,
   ],
   templateUrl: './student-approval.component.html',
   styleUrl: './student-approval.component.css',
 })
-export class StudentApprovalComponent implements AfterViewInit {
+export class StudentApprovalComponent{
   students!: StudentInfo[];
   atRisk: StudentInfo[] = [];
   notAtRisk: StudentInfo[] = [];
@@ -48,9 +50,12 @@ export class StudentApprovalComponent implements AfterViewInit {
   ApprovalStatus = ApprovalStatus;
   selectstudent = false;
   student: any;
-  remarks!: StudentInfo
-
+  remarks!: StudentInfo;
   active = 1;
+  hoveredRollNo: string | null = null;
+  approvedStudents: StudentInfo[] = [];
+  rejectedStudents: StudentInfo[] = [];
+  pendingStudents: StudentInfo[] = [];
 
   //constructor initialized
   constructor() {
@@ -64,32 +69,59 @@ export class StudentApprovalComponent implements AfterViewInit {
       (student) =>
         !student.atRisk && student.approvalStatus === ApprovalStatus.PENDING
     );
+    this.updateStudentLists();
+  }
+
+  private updateStudentLists() {
+    this.approvedStudents = this.students.filter(student => student.approvalStatus === ApprovalStatus.APPROVED);
+    this.rejectedStudents = this.students.filter(student => student.approvalStatus === ApprovalStatus.REJECTED);
+    this.pendingStudents = this.students.filter(student => student.approvalStatus === ApprovalStatus.PENDING);
   }
 
   //searching logic
   model: any;
 
-  @ViewChild('instance', { static: true })
+  @ViewChild('instance', { static: false })
   instance!: NgbTypeahead;
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
   filteredResults: StudentInfo[] = [];
 
-  ngAfterViewInit() {
-    if (this.instance) {
-      this.instance.isPopupOpen = () => false;
+  @HostListener('document:keydown',['$event'])
+  handleKeyboardEvent(event: KeyboardEvent){
+    if(event.key === 'Enter' && this.hoveredRollNo !== null){
+      this.searchclick(event, this.hoveredRollNo.toString());
+    }
+
+  }
+
+  selectStudentByRollNo(rollNo: string): void {
+    const student = this.students.find((s) => s.rollNo === rollNo);
+    if (student) {
+      this.selectstudent = true;
+      this.filteredStudent = student;
     }
   }
 
+  onMouseEnter(rollNo: string):void{
+    this.hoveredRollNo=rollNo;
+  }
+
+  onMouseLeave():void{
+    this.hoveredRollNo=null;
+  }
+
   searchclick(event : any,str: string){
-    if(str == "") return;
+    if(str === "") return;
     this.student = this.students.filter((item) => {
       return (item.rollNo==str.split(' ')[0]);
       })[0];
-    this.selectstudent = true;
+      this.selectstudent = true;
+    this.filterStudents = this.student;
+
   }
 
-  selectRollNo(event: { target: { value: any; }; }, type: string){
+  selectRollNo(event: any, type: string){
     const rollNo = event.target.value;
     if (type === 'atRisk') {
       this.atRisk = this.atRisk.filter(student => student.rollNo === rollNo);
@@ -100,15 +132,14 @@ export class StudentApprovalComponent implements AfterViewInit {
 
   onselect() {
     console.log(this.model);
-
     this.student = this.students.filter((term) => {
-      return term.rollNo == this.model.split(' ')[1];
-      console.log(this.model.split(' ')[1], term.rollNo);
+      return term.rollNo === this.model.split(' ')[1];
     })[0];
-    if (this.model == ' ') {
+    if (this.model === ' ') {
       return;
     } else {
       this.selectstudent = true;
+      this.filterStudents = this.student;
     }
   }
 
@@ -172,7 +203,8 @@ export class StudentApprovalComponent implements AfterViewInit {
       };
       this.download(approvalRequest);
       this.sendApprovalRequest(approvalRequest);
-      alert('Successfully Approved');
+      this.updateStudentLists();
+      console.log('Successfully Approved');
     }
   }
 
@@ -194,13 +226,14 @@ export class StudentApprovalComponent implements AfterViewInit {
     if (this.filteredStudent.approvalStatus === ApprovalStatus.PENDING) {
       const approvalRequest: ApprovalRequest = {
         rollNo: this.filteredStudent.rollNo,
-        isApproved: true,
+        isApproved: false,
         remarks: 'Rejected',
       };
 
       this.sendApprovalRequest(approvalRequest);
       this.download(approvalRequest);
-      alert('Rejected Successfully');
+      this.updateStudentLists();
+      console.log('Rejected Successfully');
     }
   }
 
@@ -219,19 +252,20 @@ export class StudentApprovalComponent implements AfterViewInit {
     });
 
     // If approved, remove from atRisk or notAtRisk list
-    if (approvalRequest.isApproved) {
+    if (!approvalRequest.isApproved) {
       const index = this.atRisk.findIndex(
         (student) => student.rollNo === approvalRequest.rollNo
       );
       if (index !== -1) {
         this.atRisk.splice(index, 1);
-      } else {
-        const index = this.notAtRisk.findIndex(
-          (student) => student.rollNo === approvalRequest.rollNo
-        );
-        if (index !== -1) {
-          this.notAtRisk.splice(index, 1);
-        }
+      }
+    }
+    if(approvalRequest.isApproved || !approvalRequest.isApproved) {
+      const index = this.notAtRisk.findIndex(
+        (student) => student.rollNo === approvalRequest.rollNo
+      );
+      if (index !== -1) {
+        this.notAtRisk.splice(index, 1);
       }
     }
   }
@@ -258,15 +292,14 @@ export class StudentApprovalComponent implements AfterViewInit {
     );
 
     this.download(this.students);
+    this.updateStudentLists();
     console.log('All students approved successfully.');
-    alert('All approved Successfully.');
   }
 
   approvedStudent(): void {
     this.students.forEach((student) => {
       if (student.approvalStatus === ApprovalStatus.APPROVED) {
         console.log('Already Approved');
-        alert('Already Approved');
       }
     });
   }
